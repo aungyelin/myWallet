@@ -18,6 +18,9 @@ public protocol AppRouterProtocol: AnyObject {
     /// The navigation path bound to the Profile `NavigationStack`.
     var profilePath: NavigationPath { get set }
     
+    /// Dynamic collection of navigation paths keyed by root tab.
+    var paths: [AppTab: NavigationPath] { get set }
+    
     /// The currently presented modal sheet, if any.
     var presentedSheet: AppSheet? { get set }
     
@@ -57,6 +60,13 @@ public protocol AppRouterProtocol: AnyObject {
     /// Pops the top-most view off the Profile navigation stack.
     func popInProfile()
     
+    /// Pops `count` views off the navigation stack of the specified tab (or the active tab if omitted).
+    /// Safe against underflow; if `count` exceeds stack depth, resets to root.
+    /// - Parameters:
+    ///   - count: Number of views to pop.
+    ///   - tab: The target tab, or `nil` to pop the currently selected tab.
+    func pop(count: Int, in tab: AppTab?)
+    
     /// Clears the navigation stack and returns to root for the specified tab (or the active tab if omitted).
     /// - Parameter tab: The target tab, or `nil` to clear the currently selected tab.
     func popToRoot(in tab: AppTab?)
@@ -80,6 +90,15 @@ public protocol AppRouterProtocol: AnyObject {
     
     /// Dismisses the currently presented full-screen cover.
     func dismissCover()
+    
+    /// Dismisses any active modal presentations (both sheets and full-screen covers).
+    func dismissModals()
+    
+    /// Completes an active workflow by dismissing open modals and optionally unwinding the navigation stack.
+    /// - Parameters:
+    ///   - popCount: Number of views to unwind, or `nil` to pop all the way to root.
+    ///   - tab: The target tab, or `nil` to unwind the currently selected tab.
+    func finishFlow(popCount: Int?, in tab: AppTab?)
 }
 
 // MARK: - Default Implementations
@@ -104,11 +123,19 @@ public extension AppRouterProtocol {
         pop(in: .profile)
     }
     
+    func pop(count: Int) {
+        pop(count: count, in: nil)
+    }
+    
     func popToRoot() {
         popToRoot(in: nil)
     }
     
     func popToRootInProfile() {
         popToRoot(in: .profile)
+    }
+    
+    func finishFlow(popCount: Int? = nil) {
+        finishFlow(popCount: popCount, in: nil)
     }
 }

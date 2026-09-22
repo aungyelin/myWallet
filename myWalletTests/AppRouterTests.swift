@@ -363,4 +363,120 @@ struct AppRouterTests {
         container.appRouter.navigate(to: .topUp)
         #expect(container.appRouter.path.count == 1)
     }
+    
+    @Test("Dynamic paths dictionary storage syncs with computed path properties and bindings")
+    func dynamicMultiTabPathsStorage() {
+        var initialPaths: [AppTab: NavigationPath] = [:]
+        var initialHomePath = NavigationPath()
+        initialHomePath.append(AppRoute.topUp)
+        initialPaths[.home] = initialHomePath
+        
+        let router = AppRouter(paths: initialPaths)
+        #expect(router.paths[.home]?.count == 1)
+        #expect(router.path.count == 1)
+        #expect(router.profilePath.isEmpty)
+        
+        // Mutating computed property reflects in paths dictionary
+        router.path = NavigationPath()
+        #expect(router.paths[.home]?.count == 0)
+        
+        // Mutating via binding(for:) updates path
+        let profileBinding = router.binding(for: .profile)
+        var updatedProfilePath = NavigationPath()
+        updatedProfilePath.append(AppRoute.themeSettings)
+        profileBinding.wrappedValue = updatedProfilePath
+        
+        #expect(router.profilePath.count == 1)
+        #expect(router.paths[.profile]?.count == 1)
+    }
+    
+    @Test("pop(count:in:) removes requested count and clamps safely against underflow")
+    func multiStepPopping() {
+        let router = AppRouter()
+        
+        let checkoutParams = TopUpCheckoutParams(phone: "09250000000", operatorType: .mpt, planTitle: "10k", amount: 10000)
+        let receiptParams = TopUpReceiptParams(referenceNumber: "TX-1", phone: "09250000000", operatorType: .mpt, planTitle: "10k", amount: 10000)
+        
+        router.navigate(to: .topUp)
+        router.navigate(to: .topUpDetail(checkoutParams))
+        router.navigate(to: .topUpSuccess(receiptParams))
+        #expect(router.path.count == 3)
+        
+        // Pop 2 views -> 1 should remain (.topUp)
+        router.pop(count: 2)
+        #expect(router.path.count == 1)
+        
+        // Push 2 more views
+        router.navigate(to: .topUpDetail(checkoutParams))
+        router.navigate(to: .topUpSuccess(receiptParams))
+        #expect(router.path.count == 3)
+        
+        // Pop 10 views (overflow) -> clamps safely to 0 without crashing
+        router.pop(count: 10)
+        #expect(router.path.count == 0)
+        #expect(router.path.isEmpty)
+        
+        // Non-positive count is safe no-op
+        router.pop(count: 0)
+        router.pop(count: -1)
+        #expect(router.path.isEmpty)
+    }
+    
+    @Test("dismissModals() clears both sheet and full-screen cover simultaneously")
+    func dismissModals() {
+        let router = AppRouter()
+        
+        router.present(sheet: .transactionFilter)
+        #expect(router.presentedSheet == .transactionFilter)
+        
+        let receiptParams = TopUpReceiptParams(referenceNumber: "TX-1", phone: "09250000000", operatorType: .mpt, planTitle: "10k", amount: 10000)
+        router.present(cover: .topUpSuccess(receiptParams))
+        #expect(router.presentedCover == .topUpSuccess(receiptParams))
+        
+        router.dismissModals()
+        #expect(router.presentedSheet == nil)
+        #expect(router.presentedCover == nil)
+    }
+    
+    @Test("finishFlow(popCount:in:) dismisses modals and coordinates stack unwinding")
+    func finishFlow() {
+        let router = AppRouter()
+        
+        let checkoutParams = TopUpCheckoutParams(phone: "09250000000", operatorType: .mpt, planTitle: "10k", amount: 10000)
+        let receiptParams = TopUpReceiptParams(referenceNumber: "TX-1", phone: "09250000000", operatorType: .mpt, planTitle: "10k", amount: 10000)
+        
+        router.navigate(to: .topUp)
+        router.navigate(to: .topUpDetail(checkoutParams))
+        router.present(cover: .topUpSuccess(receiptParams))
+        #expect(router.path.count == 2)
+        #expect(router.presentedCover != nil)
+        
+        // Finish flow popping 1 view (back to TopUp entry)
+        router.finishFlow(popCount: 1)
+        #expect(router.presentedCover == nil)
+        #expect(router.path.count == 1)
+        
+        // Present sheet and finish flow to root
+        router.present(sheet: .transactionFilter)
+        router.finishFlow() // Defaults to popToRoot
+        #expect(router.presentedSheet == nil)
+        #expect(router.path.count == 0)
+    }
+    
+    @Test("MockAppRouter spies on multi-step pop, dismissModals, and finishFlow calls")
+    func mockAppRouterMultiStepSpies() {
+        let mock = MockAppRouter()
+        
+        mock.pop(count: 2)
+        #expect(mock.popCallCount == 1)
+        #expect(mock.popCountInvocations.count == 1)
+        #expect(mock.popCountInvocations.first?.count == 2)
+        
+        mock.dismissModals()
+        #expect(mock.dismissModalsCallCount == 1)
+        
+        mock.finishFlow(popCount: 1)
+        #expect(mock.finishFlowInvocations.count == 1)
+        #expect(mock.finishFlowInvocations.first?.popCount == 1)
+    }
 }

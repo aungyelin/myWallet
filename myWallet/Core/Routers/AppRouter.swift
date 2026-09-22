@@ -13,32 +13,54 @@ import Observation
 public final class AppRouter: AppRouterProtocol {
     
     public var selectedTab: AppTab
-    public var path: NavigationPath
-    public var profilePath: NavigationPath
+    public var paths: [AppTab: NavigationPath]
     public var presentedSheet: AppSheet?
     public var presentedCover: AppCover?
+    
+    public var path: NavigationPath {
+        get { paths[.home, default: NavigationPath()] }
+        set { paths[.home] = newValue }
+    }
+    
+    public var profilePath: NavigationPath {
+        get { paths[.profile, default: NavigationPath()] }
+        set { paths[.profile] = newValue }
+    }
     
     public init(
         selectedTab: AppTab = .home,
         path: NavigationPath = NavigationPath(),
         profilePath: NavigationPath = NavigationPath(),
+        paths: [AppTab: NavigationPath]? = nil,
         presentedSheet: AppSheet? = nil,
         presentedCover: AppCover? = nil
     ) {
         self.selectedTab = selectedTab
-        self.path = path
-        self.profilePath = profilePath
+        var initialPaths = paths ?? [:]
+        if initialPaths[.home] == nil {
+            initialPaths[.home] = path
+        }
+        if initialPaths[.profile] == nil {
+            initialPaths[.profile] = profilePath
+        }
+        self.paths = initialPaths
         self.presentedSheet = presentedSheet
         self.presentedCover = presentedCover
     }
     
     public func path(for tab: AppTab) -> NavigationPath {
-        switch tab {
-        case .home:
-            return path
-        case .profile:
-            return profilePath
-        }
+        paths[tab, default: NavigationPath()]
+    }
+    
+    public func setPath(_ path: NavigationPath, for tab: AppTab) {
+        paths[tab] = path
+    }
+    
+    public func binding(for tab: AppTab) -> Binding<NavigationPath> {
+        Binding(
+            get: { self.path(for: tab) },
+            set: { self.setPath($0, for: tab) }
+        )
     }
     
     public func selectTab(_ tab: AppTab) {
@@ -52,12 +74,9 @@ public final class AppRouter: AppRouterProtocol {
             selectedTab = destinationTab
         }
         
-        switch destinationTab {
-        case .home:
-            path.append(route)
-        case .profile:
-            profilePath.append(route)
-        }
+        var currentPath = paths[destinationTab, default: NavigationPath()]
+        currentPath.append(route)
+        paths[destinationTab] = currentPath
     }
     
     public func navigate(to route: AppRoute) {
@@ -69,35 +88,31 @@ public final class AppRouter: AppRouterProtocol {
     }
     
     public func pop(in tab: AppTab? = nil) {
+        pop(count: 1, in: tab)
+    }
+    
+    public func pop(count: Int, in tab: AppTab? = nil) {
+        guard count > 0 else { return }
         let targetTab = tab ?? selectedTab
-        switch targetTab {
-        case .home:
-            guard !path.isEmpty else { return }
-            path.removeLast()
-        case .profile:
-            guard !profilePath.isEmpty else { return }
-            profilePath.removeLast()
-        }
+        var currentPath = paths[targetTab, default: NavigationPath()]
+        guard !currentPath.isEmpty else { return }
+        
+        let popCount = min(count, currentPath.count)
+        currentPath.removeLast(popCount)
+        paths[targetTab] = currentPath
     }
     
     public func pop() {
-        pop(in: nil)
+        pop(count: 1, in: nil)
     }
     
     public func popInProfile() {
-        pop(in: .profile)
+        pop(count: 1, in: .profile)
     }
     
     public func popToRoot(in tab: AppTab? = nil) {
         let targetTab = tab ?? selectedTab
-        switch targetTab {
-        case .home:
-            guard !path.isEmpty else { return }
-            path.removeLast(path.count)
-        case .profile:
-            guard !profilePath.isEmpty else { return }
-            profilePath.removeLast(profilePath.count)
-        }
+        paths[targetTab] = NavigationPath()
     }
     
     public func popToRoot() {
@@ -122,6 +137,20 @@ public final class AppRouter: AppRouterProtocol {
     
     public func dismissCover() {
         presentedCover = nil
+    }
+    
+    public func dismissModals() {
+        presentedSheet = nil
+        presentedCover = nil
+    }
+    
+    public func finishFlow(popCount: Int? = nil, in tab: AppTab? = nil) {
+        dismissModals()
+        if let popCount {
+            pop(count: popCount, in: tab)
+        } else {
+            popToRoot(in: tab)
+        }
     }
     
 }

@@ -13,10 +13,19 @@ import SwiftUI
 final class MockAppRouter: AppRouterProtocol {
     
     var selectedTab: AppTab = .home
-    var path: NavigationPath = NavigationPath()
-    var profilePath: NavigationPath = NavigationPath()
+    var paths: [AppTab: NavigationPath] = [:]
     var presentedSheet: AppSheet? = nil
     var presentedCover: AppCover? = nil
+    
+    var path: NavigationPath {
+        get { paths[.home, default: NavigationPath()] }
+        set { paths[.home] = newValue }
+    }
+    
+    var profilePath: NavigationPath {
+        get { paths[.profile, default: NavigationPath()] }
+        set { paths[.profile] = newValue }
+    }
     
     // Spied invocations
     var navigatedRoutes: [AppRoute] = []
@@ -24,6 +33,7 @@ final class MockAppRouter: AppRouterProtocol {
     var navigationInvocations: [(route: AppRoute, tab: AppTab?, autoSwitchTab: Bool)] = []
     var popCallCount: Int = 0
     var popInProfileCallCount: Int = 0
+    var popCountInvocations: [(count: Int, tab: AppTab?)] = []
     var popToRootCallCount: Int = 0
     var popToRootInProfileCallCount: Int = 0
     var selectedTabs: [AppTab] = []
@@ -31,14 +41,11 @@ final class MockAppRouter: AppRouterProtocol {
     var presentedCovers: [AppCover] = []
     var dismissSheetCallCount: Int = 0
     var dismissCoverCallCount: Int = 0
+    var dismissModalsCallCount: Int = 0
+    var finishFlowInvocations: [(popCount: Int?, tab: AppTab?)] = []
     
     func path(for tab: AppTab) -> NavigationPath {
-        switch tab {
-        case .home:
-            return path
-        case .profile:
-            return profilePath
-        }
+        paths[tab, default: NavigationPath()]
     }
     
     func selectTab(_ tab: AppTab) {
@@ -55,12 +62,12 @@ final class MockAppRouter: AppRouterProtocol {
             selectedTab = destinationTab
         }
         
-        switch destinationTab {
-        case .home:
-            path.append(route)
-        case .profile:
+        var currentPath = paths[destinationTab, default: NavigationPath()]
+        currentPath.append(route)
+        paths[destinationTab] = currentPath
+        
+        if destinationTab == .profile {
             navigatedProfileRoutes.append(route)
-            profilePath.append(route)
         }
     }
     
@@ -82,17 +89,37 @@ final class MockAppRouter: AppRouterProtocol {
         }
     }
     
+    func pop(count: Int, in tab: AppTab? = nil) {
+        popCallCount += 1
+        popCountInvocations.append((count: count, tab: tab))
+        
+        let targetTab = tab ?? selectedTab
+        var currentPath = paths[targetTab, default: NavigationPath()]
+        guard !currentPath.isEmpty else { return }
+        let popCount = min(count, currentPath.count)
+        currentPath.removeLast(popCount)
+        paths[targetTab] = currentPath
+        
+        if targetTab == .profile {
+            popInProfileCallCount += 1
+        }
+    }
+    
     func pop() {
         popCallCount += 1
-        if !path.isEmpty {
-            path.removeLast()
+        var currentPath = paths[.home, default: NavigationPath()]
+        if !currentPath.isEmpty {
+            currentPath.removeLast()
+            paths[.home] = currentPath
         }
     }
     
     func popInProfile() {
         popInProfileCallCount += 1
-        if !profilePath.isEmpty {
-            profilePath.removeLast()
+        var currentPath = paths[.profile, default: NavigationPath()]
+        if !currentPath.isEmpty {
+            currentPath.removeLast()
+            paths[.profile] = currentPath
         }
     }
     
@@ -108,16 +135,12 @@ final class MockAppRouter: AppRouterProtocol {
     
     func popToRoot() {
         popToRootCallCount += 1
-        if !path.isEmpty {
-            path.removeLast(path.count)
-        }
+        paths[.home] = NavigationPath()
     }
     
     func popToRootInProfile() {
         popToRootInProfileCallCount += 1
-        if !profilePath.isEmpty {
-            profilePath.removeLast(profilePath.count)
-        }
+        paths[.profile] = NavigationPath()
     }
     
     func present(sheet: AppSheet) {
@@ -138,5 +161,21 @@ final class MockAppRouter: AppRouterProtocol {
     func dismissCover() {
         dismissCoverCallCount += 1
         presentedCover = nil
+    }
+    
+    func dismissModals() {
+        dismissModalsCallCount += 1
+        presentedSheet = nil
+        presentedCover = nil
+    }
+    
+    func finishFlow(popCount: Int? = nil, in tab: AppTab? = nil) {
+        finishFlowInvocations.append((popCount: popCount, tab: tab))
+        dismissModals()
+        if let popCount {
+            pop(count: popCount, in: tab)
+        } else {
+            popToRoot(in: tab)
+        }
     }
 }
