@@ -15,15 +15,14 @@ public enum Constants {
         public static let fastLatencyNanoseconds: UInt64 = 10_000_000       // 0.01s for testing
     }
 
-    /// Telecom operators and prefix detection boundaries.
     public enum Telecom {
         /// Minimum typed digits required to trigger automatic telecom detection.
         public static let minPrefixDetectionDigits: Int = 3
-        public static let mpt = "MPT"
-        public static let atom = "ATOM"
-        public static let ooredoo = "Ooredoo"
-        public static let mytel = "Mytel"
-        public static let unknown = "Unknown"
+        public static let mpt = TelecomOperator.mpt.rawValue
+        public static let atom = TelecomOperator.atom.rawValue
+        public static let ooredoo = TelecomOperator.ooredoo.rawValue
+        public static let mytel = TelecomOperator.mytel.rawValue
+        public static let unknown = TelecomOperator.unknown.rawValue
         public static let myanmarCountryCode = "+959"
         public static let localPrefix = "09"
     }

@@ -9,11 +9,14 @@ import Foundation
 import SwiftData
 import OSLog
 
+/// Concrete repository implementation using Network-First with Local Cache Fallback for package catalogs.
 @MainActor
 public final class TopUpRepository: TopUpRepositoryProtocol {
     
     private let networkService: MockNetworkServiceProtocol
     private let modelContext: ModelContext
+    private var inMemoryCache: [String: [PackageEntity]] = [:]
+    
     private let logger = Logger(
         subsystem: Constants.Logging.subsystem,
         category: Constants.Logging.repositoryCategory
@@ -36,18 +39,28 @@ public final class TopUpRepository: TopUpRepositoryProtocol {
             for dto in remoteDTOs {
                 modelContext.insert(dto.toEntity())
             }
-            try? modelContext.save()
+            saveContext()
             logger.info("Successfully refreshed packages from network for operator: \(operatorName, privacy: .public)")
 
             // 3. Query SwiftData single source of truth
-            return try fetchCachedPackages(for: operatorName)
+            let freshPackages = try fetchCachedPackages(for: operatorName)
+            inMemoryCache[operatorName] = freshPackages
+            return freshPackages
+        } catch is CancellationError {
+            throw CancellationError()
         } catch {
-            // 4. Network Failure: Fallback to local SwiftData cache
-            logger.warning("Network request failed. Attempting local cache fallback for operator: \(operatorName, privacy: .public)")
+            // 4. Network Failure: Fallback to in-memory or local SwiftData cache
+            if let memoryCached = inMemoryCache[operatorName], !memoryCached.isEmpty {
+                logger.info("Serving \(memoryCached.count) cached packages from memory for operator: \(operatorName, privacy: .public)")
+                return memoryCached
+            }
+
+            logger.warning("Network request failed. Attempting local SwiftData cache fallback for operator: \(operatorName, privacy: .public)")
             let cached = try fetchCachedPackages(for: operatorName)
 
             if !cached.isEmpty {
                 logger.info("Serving \(cached.count) cached packages offline for operator: \(operatorName, privacy: .public)")
+                inMemoryCache[operatorName] = cached
                 return cached
             } else {
                 logger.error("No cached packages available and network failed for operator: \(operatorName, privacy: .public)")
@@ -62,8 +75,10 @@ public final class TopUpRepository: TopUpRepositoryProtocol {
             for dto in dtos {
                 modelContext.insert(dto.toEntity())
             }
-            try? modelContext.save()
+            saveContext()
             logger.info("Successfully pre-loaded packages in background.")
+        } catch is CancellationError {
+            return
         } catch {
             logger.debug("Background pre-loading of packages completed with error (ignored): \(error.localizedDescription, privacy: .public)")
         }
@@ -71,10 +86,16 @@ public final class TopUpRepository: TopUpRepositoryProtocol {
 
     public func saveTransaction(_ transaction: TransactionHistory) throws {
         modelContext.insert(transaction)
-        try modelContext.save()
-        logger.info("Saved transaction to SwiftData successfully.")
+        do {
+            try modelContext.save()
+            logger.info("Saved transaction \(transaction.referenceNumber, privacy: .public) to SwiftData successfully.")
+        } catch {
+            logger.error("Failed to save transaction to SwiftData: \(error.localizedDescription, privacy: .public)")
+            throw AppError.persistenceFailure(error.localizedDescription)
+        }
     }
 
+    // MARK: - Private Helpers
     private func fetchCachedPackages(for operatorName: String) throws -> [PackageEntity] {
         let descriptor = FetchDescriptor<PackageEntity>(
             predicate: #Predicate<PackageEntity> { entity in
@@ -83,6 +104,14 @@ public final class TopUpRepository: TopUpRepositoryProtocol {
             sortBy: [SortDescriptor(\.amount, order: .forward)]
         )
         return try modelContext.fetch(descriptor)
+    }
+
+    private func saveContext() {
+        do {
+            try modelContext.save()
+        } catch {
+            logger.error("Failed to save SwiftData context in TopUpRepository: \(error.localizedDescription, privacy: .public)")
+        }
     }
     
 }

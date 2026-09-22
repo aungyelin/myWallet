@@ -73,6 +73,8 @@ public final class MockNetworkService: MockNetworkServiceProtocol {
         } catch let error as DecodingError {
             logger.error("Decoding failure for \(filename, privacy: .public): \(error.localizedDescription, privacy: .public)")
             throw AppError.decodingFailure(error.localizedDescription)
+        } catch is CancellationError {
+            throw CancellationError()
         } catch {
             logger.error("Error loading \(filename, privacy: .public): \(error.localizedDescription, privacy: .public)")
             throw AppError.networkFailure

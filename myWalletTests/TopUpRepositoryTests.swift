@@ -90,6 +90,8 @@ struct TopUpRepositoryTests {
         #expect(fetched.count == 1)
         #expect(fetched.first?.mobileNumber == "09250000000")
         #expect(fetched.first?.operatorName == "MPT")
+        #expect(fetched.first?.operatorType == .mpt)
+        #expect(fetched.first?.referenceNumber.hasPrefix("TXN-") == true)
     }
 
     @Test("prefetchPackages: Silently caches data when network succeeds")

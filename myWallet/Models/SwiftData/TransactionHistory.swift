@@ -46,7 +46,7 @@ public final class TransactionHistory {
         status: TransactionStatus = .success,
         amount: Double,
         date: Date = Date(),
-        referenceNumber: String = UUID().uuidString,
+        referenceNumber: String = ReferenceNumberGenerator.generate(),
         fee: Double = 0.0,
         counterparty: String = "",
         recipientName: String? = nil,
@@ -79,6 +79,10 @@ public final class TransactionHistory {
         TransactionStatus(rawValue: status) ?? .success
     }
 
+    public var operatorType: TelecomOperator {
+        TelecomOperator.from(rawName: operatorName)
+    }
+
     // MARK: - Factory Methods
     /// Creates a mobile top-up transaction record.
     public static func createTopUp(
@@ -91,15 +95,16 @@ public final class TransactionHistory {
         fee: Double = 0.0,
         remark: String? = nil,
         date: Date = Date(),
-        referenceNumber: String = UUID().uuidString
+        referenceNumber: String? = nil
     ) -> TransactionHistory {
-        TransactionHistory(
+        let reference = referenceNumber ?? ReferenceNumberGenerator.generate(date: date)
+        return TransactionHistory(
             id: id,
             transactionType: .topUp,
             status: status,
             amount: amount,
             date: date,
-            referenceNumber: referenceNumber,
+            referenceNumber: reference,
             fee: fee,
             counterparty: mobileNumber,
             recipientName: nil,
@@ -120,15 +125,16 @@ public final class TransactionHistory {
         fee: Double = 0.0,
         remark: String? = nil,
         date: Date = Date(),
-        referenceNumber: String = UUID().uuidString
+        referenceNumber: String? = nil
     ) -> TransactionHistory {
-        TransactionHistory(
+        let reference = referenceNumber ?? ReferenceNumberGenerator.generate(date: date)
+        return TransactionHistory(
             id: id,
             transactionType: .transfer,
             status: status,
             amount: amount,
             date: date,
-            referenceNumber: referenceNumber,
+            referenceNumber: reference,
             fee: fee,
             counterparty: accountOrPhone,
             recipientName: recipientName,
@@ -149,15 +155,16 @@ public final class TransactionHistory {
         fee: Double = 0.0,
         remark: String? = nil,
         date: Date = Date(),
-        referenceNumber: String = UUID().uuidString
+        referenceNumber: String? = nil
     ) -> TransactionHistory {
-        TransactionHistory(
+        let reference = referenceNumber ?? ReferenceNumberGenerator.generate(date: date)
+        return TransactionHistory(
             id: id,
             transactionType: .payment,
             status: status,
             amount: amount,
             date: date,
-            referenceNumber: referenceNumber,
+            referenceNumber: reference,
             fee: fee,
             counterparty: merchantId,
             recipientName: merchantName,

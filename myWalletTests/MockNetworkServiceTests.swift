@@ -51,4 +51,22 @@ struct MockNetworkServiceTests {
             _ = try await invalidService.fetchTelecomPrefixes()
         }
     }
+
+    @Test("Cancelling an active network fetch throws CancellationError directly")
+    func cancellationThrowsCancellationError() async {
+        let serviceWithLatency = MockNetworkService(latencyNanoseconds: 1_000_000_000)
+        let task = Task {
+            try await serviceWithLatency.fetchPackages()
+        }
+        task.cancel()
+
+        do {
+            _ = try await task.value
+            Issue.record("Expected CancellationError was not thrown")
+        } catch is CancellationError {
+            // Expected
+        } catch {
+            Issue.record("Unexpected error type: \(error)")
+        }
+    }
 }

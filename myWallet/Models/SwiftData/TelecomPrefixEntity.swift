@@ -35,4 +35,8 @@ public final class TelecomPrefixEntity {
         self.brandDisplayName = brandDisplayName
         self.brandLogoName = brandLogoName
     }
+
+    public var operatorType: TelecomOperator {
+        TelecomOperator.from(rawName: operatorName)
+    }
 }

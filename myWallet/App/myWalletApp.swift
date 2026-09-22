@@ -10,11 +10,12 @@ import SwiftData
 
 @main
 struct myWalletApp: App {
-    private let sharedModelContainer: ModelContainer
+    private let container: AppContainer
 
     init() {
         do {
-            self.sharedModelContainer = try AppModelContainer.createContainer()
+            let modelContainer = try AppModelContainer.createContainer()
+            self.container = AppContainer(modelContainer: modelContainer)
         } catch {
             fatalError("Could not create ModelContainer: \(error)")
         }
@@ -23,28 +24,19 @@ struct myWalletApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environment(container)
+                .environment(\.appContainer, container)
                 .task(priority: .background) {
                     await preloadData()
                 }
         }
-        .modelContainer(sharedModelContainer)
+        .modelContainer(container.modelContainer)
     }
 
     @MainActor
     private func preloadData() async {
-        let networkService = MockNetworkService()
-        let telecomRepo = TelecomRepository(
-            networkService: networkService,
-            modelContext: sharedModelContainer.mainContext
-        )
-        let topUpRepo = TopUpRepository(
-            networkService: networkService,
-            modelContext: sharedModelContainer.mainContext
-        )
-
-        async let prefixPreload: () = telecomRepo.prefetchPrefixes()
-        async let packagePreload: () = topUpRepo.prefetchPackages()
+        async let prefixPreload: () = container.telecomRepository.prefetchPrefixes()
+        async let packagePreload: () = container.topUpRepository.prefetchPackages()
         _ = await (prefixPreload, packagePreload)
     }
-    
 }

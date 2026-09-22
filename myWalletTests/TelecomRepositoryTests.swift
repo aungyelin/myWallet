@@ -26,6 +26,10 @@ struct TelecomRepositoryTests {
         #expect(repository.sanitizeAndNormalize("09-778-239-012") == "09778239012")
         #expect(repository.sanitizeAndNormalize("9250123456") == "09250123456")
         #expect(repository.sanitizeAndNormalize("(09) 971 234 567") == "09971234567")
+        // Myanmar Unicode numerals conversion (၀-၉)
+        #expect(repository.sanitizeAndNormalize("၀၉၂၅၀၀၀၀၀၀၀") == "09250000000")
+        #expect(repository.sanitizeAndNormalize("+၉၅၉၇၇၀၀၀၀၀၀၀") == "09770000000")
+        #expect(repository.sanitizeAndNormalize("၀9.450.123.456") == "09450123456")
     }
 
     @Test("Operator Detection: Accurately identifies Myanmar telecoms")
@@ -139,6 +143,29 @@ struct TelecomRepositoryTests {
 
         let count = try context.fetchCount(FetchDescriptor<TelecomPrefixEntity>())
         #expect(count == 0)
+    }
+
+    @Test("Instant Offline Keystroke Detection: Evaluates from cache without network latency")
+    func instantOfflineDetection() async throws {
+        let container = try AppModelContainer.createInMemoryContainer()
+        let context = container.mainContext
+
+        let prefix = TelecomPrefixEntity(
+            prefix: "094",
+            operatorName: "MPT",
+            brandDisplayName: "MPT",
+            brandLogoName: "mpt_logo"
+        )
+        context.insert(prefix)
+        try context.save()
+
+        // Use a mock network that would throw if called, proving detectOperator evaluates offline without network call
+        let networkThatMustNotBeCalled = FailingTelecomNetworkService()
+        let repository = TelecomRepository(networkService: networkThatMustNotBeCalled, modelContext: context)
+
+        let detected = try await repository.detectOperator(for: "09450123456")
+        #expect(detected?.operatorName == "MPT")
+        #expect(detected?.operatorType == .mpt)
     }
 }
 

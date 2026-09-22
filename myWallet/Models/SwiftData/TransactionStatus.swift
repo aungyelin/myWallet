@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 public enum TransactionStatus: String, Codable, CaseIterable, Sendable {
     case success = "success"
@@ -20,6 +21,28 @@ public enum TransactionStatus: String, Codable, CaseIterable, Sendable {
             return String(localized: "status_pending", defaultValue: "Pending")
         case .failed:
             return String(localized: "status_failed", defaultValue: "Failed")
+        }
+    }
+
+    public var statusColor: Color {
+        switch self {
+        case .success:
+            return .green
+        case .pending:
+            return .orange
+        case .failed:
+            return .red
+        }
+    }
+
+    public var systemIconName: String {
+        switch self {
+        case .success:
+            return "checkmark.circle.fill"
+        case .pending:
+            return "clock.fill"
+        case .failed:
+            return "xmark.circle.fill"
         }
     }
 }

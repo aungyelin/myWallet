@@ -55,4 +55,8 @@ public final class PackageEntity {
         self.dataAllowance = dataAllowance
         self.isPopular = isPopular
     }
+
+    public var operatorType: TelecomOperator {
+        TelecomOperator.from(rawName: operatorName)
+    }
 }
