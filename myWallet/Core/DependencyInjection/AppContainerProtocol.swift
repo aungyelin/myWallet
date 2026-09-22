@@ -10,9 +10,19 @@ import SwiftData
 
 @MainActor
 public protocol AppContainerProtocol: AnyObject {
+    
     var modelContainer: ModelContainer { get }
+    
     var networkService: MockNetworkServiceProtocol { get }
+    
     var telecomRepository: TelecomRepositoryProtocol { get }
+    
     var topUpRepository: TopUpRepositoryProtocol { get }
+    
     var transactionRepository: TransactionRepositoryProtocol { get }
+    
+    var themeManager: ThemeManagerProtocol { get }
+    
+    var appRouter: any AppRouterProtocol { get }
+    
 }

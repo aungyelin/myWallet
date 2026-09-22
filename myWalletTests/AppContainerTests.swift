@@ -28,6 +28,8 @@ struct AppContainerTests {
         #expect(container.topUpRepository != nil)
         #expect(container.transactionRepository != nil)
         #expect(container.networkService != nil)
+        #expect(container.themeManager != nil)
+        #expect(container.appRouter != nil)
         #expect(container.modelContainer === modelContainer)
     }
 
@@ -40,6 +42,8 @@ struct AppContainerTests {
         #expect(container.telecomRepository != nil)
         #expect(container.topUpRepository != nil)
         #expect(container.transactionRepository != nil)
+        #expect(container.themeManager != nil)
+        #expect(container.appRouter != nil)
     }
 
     @Test("createInMemory factory creates valid preview container with zero latency")
@@ -48,6 +52,8 @@ struct AppContainerTests {
         #expect(container.telecomRepository != nil)
         #expect(container.topUpRepository != nil)
         #expect(container.transactionRepository != nil)
+        #expect(container.themeManager != nil)
+        #expect(container.appRouter != nil)
         #expect(container.modelContainer != nil)
     }
 }
