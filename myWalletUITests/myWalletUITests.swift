@@ -40,4 +40,5 @@ final class myWalletUITests: XCTestCase {
             XCUIApplication().launch()
         }
     }
+    
 }
