@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-/// Dedicated screen allowing the user to configure the application appearance theme.
 struct ThemeSettingsView: View {
     @Environment(\.themeManager) private var themeManager
     
@@ -54,6 +53,8 @@ struct ThemeSettingsView: View {
         }
         .navigationTitle(String(localized: "profile_theme_setting"))
         .navigationBarTitleDisplayMode(.inline)
+        .scrollContentBackground(.hidden)
+        .background(AppColors.screenBackground)
     }
 }
 
