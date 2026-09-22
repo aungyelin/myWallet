@@ -23,9 +23,13 @@ struct myWalletApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            RootTabView(router: container.router)
                 .environment(container)
                 .environment(\.appContainer, container)
+                .environment(container.router)
+                .environment(\.appRouter, container.router)
+                .environment(ThemeManager.shared)
+                .environment(\.themeManager, ThemeManager.shared)
                 .task(priority: .background) {
                     await preloadData()
                 }

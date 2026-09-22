@@ -13,18 +13,24 @@ import SwiftUI
 @Observable
 @MainActor
 public final class AppContainer: AppContainerProtocol {
+    
     public let modelContainer: ModelContainer
     public let networkService: MockNetworkServiceProtocol
     public let telecomRepository: TelecomRepositoryProtocol
     public let topUpRepository: TopUpRepositoryProtocol
     public let transactionRepository: TransactionRepositoryProtocol
+    public let themeManager: ThemeManagerProtocol
+    public let router: AppRouter
+    public var appRouter: any AppRouterProtocol { router }
     
     public init(
         modelContainer: ModelContainer,
         networkService: MockNetworkServiceProtocol? = nil,
         telecomRepository: TelecomRepositoryProtocol? = nil,
         topUpRepository: TopUpRepositoryProtocol? = nil,
-        transactionRepository: TransactionRepositoryProtocol? = nil
+        transactionRepository: TransactionRepositoryProtocol? = nil,
+        themeManager: ThemeManagerProtocol? = nil,
+        router: AppRouter? = nil
     ) {
         self.modelContainer = modelContainer
         let network = networkService ?? MockNetworkService()
@@ -40,14 +46,20 @@ public final class AppContainer: AppContainerProtocol {
         self.transactionRepository = transactionRepository ?? TransactionRepository(
             modelContext: modelContainer.mainContext
         )
+        self.themeManager = themeManager ?? ThemeManager.shared
+        self.router = router ?? AppRouter()
     }
 
     /// Convenience factory creating an in-memory test/preview container with configurable latency.
-    public static func createInMemory(latencyNanoseconds: UInt64 = 0) throws -> AppContainer {
+    public static func createInMemory(
+        latencyNanoseconds: UInt64 = 0,
+        router: AppRouter? = nil
+    ) throws -> AppContainer {
         let container = try AppModelContainer.createInMemoryContainer()
         let network = MockNetworkService(latencyNanoseconds: latencyNanoseconds)
-        return AppContainer(modelContainer: container, networkService: network)
+        return AppContainer(modelContainer: container, networkService: network, router: router)
     }
+    
 }
 
 // MARK: - Environment Values Extension
