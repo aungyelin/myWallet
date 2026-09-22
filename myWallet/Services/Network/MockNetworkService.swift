@@ -47,6 +47,31 @@ public final class MockNetworkService: MockNetworkServiceProtocol {
         )
     }
 
+    public func submitTopUpRecharge(
+        phone: String,
+        operatorName: String,
+        planTitle: String,
+        amount: Double
+    ) async throws -> TopUpRechargeResponseDTO {
+        if latencyNanoseconds > 0 {
+            try await Task.sleep(nanoseconds: latencyNanoseconds)
+        }
+        
+        let referenceNumber = ReferenceNumberGenerator.generate()
+        logger.info("Mock API: processed top-up recharge for \(operatorName, privacy: .public), ref: \(referenceNumber, privacy: .public)")
+        
+        return TopUpRechargeResponseDTO(
+            referenceNumber: referenceNumber,
+            status: Constants.Transaction.statusSuccess,
+            timestamp: Date(),
+            mobileNumber: phone,
+            operatorName: operatorName,
+            planDetails: planTitle,
+            amount: amount,
+            fee: 0.0
+        )
+    }
+
     private func loadAndDecode<T: Decodable>(
         filename: String,
         as type: T.Type

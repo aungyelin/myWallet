@@ -17,7 +17,7 @@ public enum ReferenceNumberGenerator {
         let day = calendar.component(.day, from: date)
         let dateString = String(format: "%04d%02d%02d", year, month, day)
         let randomNumber = Int.random(in: 100_000...999_999)
-        return "TXN-\(dateString)-\(randomNumber)" // (e.g. `TXN-20260922-482910`)
+        return "\(dateString)-\(randomNumber)" // (e.g. `20260923-482910`)
     }
     
 }

@@ -8,11 +8,10 @@
 import Foundation
 import SwiftUI
 
-/// Canonical telecom operator identifiers recognized by the Myanmar telecommunications numbering plan.
 public enum TelecomOperator: String, CaseIterable, Codable, Sendable {
     case mpt = "MPT"
     case atom = "ATOM"
-    case ooredoo = "Ooredoo"
+    case u9 = "U9"
     case mytel = "Mytel"
     case unknown = "Unknown"
     
@@ -23,8 +22,8 @@ public enum TelecomOperator: String, CaseIterable, Codable, Sendable {
             return String(localized: "operator_mpt", defaultValue: "MPT")
         case .atom:
             return String(localized: "operator_atom", defaultValue: "ATOM")
-        case .ooredoo:
-            return String(localized: "operator_ooredoo", defaultValue: "Ooredoo")
+        case .u9:
+            return String(localized: "operator_u9", defaultValue: "U9")
         case .mytel:
             return String(localized: "operator_mytel", defaultValue: "Mytel")
         case .unknown:
@@ -39,8 +38,8 @@ public enum TelecomOperator: String, CaseIterable, Codable, Sendable {
             return .blue
         case .atom:
             return .cyan
-        case .ooredoo:
-            return .red
+        case .u9:
+            return Color(red: 0.88, green: 0.68, blue: 0.15)
         case .mytel:
             return .orange
         case .unknown:
@@ -55,12 +54,28 @@ public enum TelecomOperator: String, CaseIterable, Codable, Sendable {
             return "blue"
         case .atom:
             return "cyan"
-        case .ooredoo:
-            return "red"
+        case .u9:
+            return "gold"
         case .mytel:
             return "orange"
         case .unknown:
             return "gray"
+        }
+    }
+
+    /// Asset catalog image set name for the telecom operator logo.
+    public var logoAssetName: String? {
+        switch self {
+        case .mpt:
+            return "mpt"
+        case .atom:
+            return "atom"
+        case .u9:
+            return "u9"
+        case .mytel:
+            return "mytel"
+        case .unknown:
+            return nil
         }
     }
     
@@ -71,7 +86,7 @@ public enum TelecomOperator: String, CaseIterable, Codable, Sendable {
             return "antenna.radiowaves.left.and.right"
         case .atom:
             return "bolt.horizontal.circle.fill"
-        case .ooredoo:
+        case .u9:
             return "flame.fill"
         case .mytel:
             return "network"

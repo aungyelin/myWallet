@@ -17,4 +17,6 @@ public protocol TelecomRepositoryProtocol: AnyObject {
 
     func prefetchPrefixes() async
     
+    func sanitizeAndNormalize(_ input: String) -> String
+    
 }

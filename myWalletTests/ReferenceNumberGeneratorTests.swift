@@ -12,17 +12,16 @@ import Foundation
 @Suite("ReferenceNumberGenerator Tests")
 struct ReferenceNumberGeneratorTests {
     
-    @Test("Generates reference with correct TXN-YYYYMMDD-XXXXXX format")
+    @Test("Generates reference with correct YYYYMMDD-XXXXXX format without TXN prefix")
     func validFormat() {
         let reference = ReferenceNumberGenerator.generate()
-        #expect(reference.hasPrefix("TXN-"))
+        #expect(!reference.hasPrefix("TXN"))
         
         let components = reference.split(separator: "-")
-        #expect(components.count == 3)
-        #expect(components[0] == "TXN")
-        #expect(components[1].count == 8) // YYYYMMDD
-        #expect(components[2].count == 6) // 6 digits
-        #expect(Int(components[2]) != nil)
+        #expect(components.count == 2)
+        #expect(components[0].count == 8) // YYYYMMDD
+        #expect(components[1].count == 6) // 6 digits
+        #expect(Int(components[1]) != nil)
     }
 
     @Test("Generates distinct numbers on successive calls")

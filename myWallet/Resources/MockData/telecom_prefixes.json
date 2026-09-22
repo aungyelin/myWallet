@@ -3,48 +3,48 @@
     "prefix": "092",
     "operatorName": "MPT",
     "brandDisplayName": "MPT",
-    "brandLogoName": "mpt_logo"
+    "brandLogoName": "mpt"
   },
   {
     "prefix": "094",
     "operatorName": "MPT",
     "brandDisplayName": "MPT",
-    "brandLogoName": "mpt_logo"
+    "brandLogoName": "mpt"
   },
   {
     "prefix": "095",
     "operatorName": "MPT",
     "brandDisplayName": "MPT",
-    "brandLogoName": "mpt_logo"
+    "brandLogoName": "mpt"
   },
   {
     "prefix": "098",
     "operatorName": "MPT",
     "brandDisplayName": "MPT",
-    "brandLogoName": "mpt_logo"
+    "brandLogoName": "mpt"
   },
   {
     "prefix": "0989",
     "operatorName": "MPT",
     "brandDisplayName": "MPT",
-    "brandLogoName": "mpt_logo"
+    "brandLogoName": "mpt"
   },
   {
     "prefix": "097",
     "operatorName": "ATOM",
     "brandDisplayName": "ATOM",
-    "brandLogoName": "atom_logo"
+    "brandLogoName": "atom"
   },
   {
     "prefix": "099",
-    "operatorName": "Ooredoo",
-    "brandDisplayName": "Ooredoo",
-    "brandLogoName": "ooredoo_logo"
+    "operatorName": "U9",
+    "brandDisplayName": "U9",
+    "brandLogoName": "u9"
   },
   {
     "prefix": "096",
     "operatorName": "Mytel",
     "brandDisplayName": "Mytel",
-    "brandLogoName": "mytel_logo"
+    "brandLogoName": "mytel"
   }
 ]

@@ -13,10 +13,12 @@ import SwiftData
 public final class PackageEntity {
     /// Unique identifier for the package (e.g. "pkg_mpt_denom_1000").
     @Attribute(.unique) public var id: String
-    /// Associated telecom operator name (e.g. "MPT", "ATOM", "Ooredoo", "Mytel").
+    /// Associated telecom operator name (e.g. "MPT", "ATOM", "U9", "Mytel").
     public var operatorName: String
-    /// Category of the item: "denomination" or "dataPackage".
+    /// Category of the item: "Data", "Voice", "Auto Renewal", "Entertainment", "SMS", "Roaming", etc.
     public var category: String
+    /// Pack group identifier (e.g. "A Kyite Kyi", "Data Carry Plus", "Unlimited Packs").
+    public var packGroup: String
     /// Display name of the package or denomination.
     public var name: String
     /// Detailed description of package terms, quota, or talk-time.
@@ -36,6 +38,7 @@ public final class PackageEntity {
         id: String,
         operatorName: String,
         category: String,
+        packGroup: String = "",
         name: String,
         packageDescription: String,
         amount: Double,
@@ -47,6 +50,7 @@ public final class PackageEntity {
         self.id = id
         self.operatorName = operatorName
         self.category = category
+        self.packGroup = packGroup
         self.name = name
         self.packageDescription = packageDescription
         self.amount = amount

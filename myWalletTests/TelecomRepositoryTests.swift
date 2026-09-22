@@ -50,8 +50,9 @@ struct TelecomRepositoryTests {
         let atom = try await repository.detectOperator(for: "09770000000")
         #expect(atom?.operatorName == "ATOM")
 
-        let ooredoo = try await repository.detectOperator(for: "09970000000")
-        #expect(ooredoo?.operatorName == "Ooredoo")
+        let u9 = try await repository.detectOperator(for: "09970000000")
+        #expect(u9?.operatorName == "U9")
+        #expect(u9?.operatorType == .u9)
 
         let mytel = try await repository.detectOperator(for: "09690000000")
         #expect(mytel?.operatorName == "Mytel")
@@ -180,6 +181,15 @@ private final class FailingTelecomNetworkService: MockNetworkServiceProtocol, Se
     }
 
     func fetchSeedTransactions() async throws -> [TransactionHistoryDTO] {
+        throw AppError.networkFailure
+    }
+
+    func submitTopUpRecharge(
+        phone: String,
+        operatorName: String,
+        planTitle: String,
+        amount: Double
+    ) async throws -> TopUpRechargeResponseDTO {
         throw AppError.networkFailure
     }
 }

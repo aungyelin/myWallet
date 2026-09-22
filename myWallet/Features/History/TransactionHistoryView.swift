@@ -28,7 +28,7 @@ struct TransactionHistoryView: View {
                 .foregroundStyle(.secondary)
             
             Button(action: {
-                router?.navigate(to: .transactionDetail(referenceNumber: "TXN-20260922-839201"))
+                router?.navigate(to: .transactionDetail(referenceNumber: "20260922-839201"))
             }) {
                 Label(String(localized: "action_proceed"), systemImage: "arrow.right")
                     .frame(maxWidth: .infinity)

@@ -16,4 +16,11 @@ public protocol MockNetworkServiceProtocol: Sendable {
 
     func fetchSeedTransactions() async throws -> [TransactionHistoryDTO] // Temp
     
+    func submitTopUpRecharge(
+        phone: String,
+        operatorName: String,
+        planTitle: String,
+        amount: Double
+    ) async throws -> TopUpRechargeResponseDTO
+    
 }

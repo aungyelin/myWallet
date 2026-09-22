@@ -50,6 +50,6 @@ struct TransactionDetailView: View {
 
 #Preview("TransactionDetailView") {
     NavigationStack {
-        TransactionDetailView(referenceNumber: "TXN-20260922-839201")
+        TransactionDetailView(referenceNumber: "20260922-839201")
     }
 }

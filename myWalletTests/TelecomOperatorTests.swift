@@ -16,7 +16,7 @@ struct TelecomOperatorTests {
     func rawValues() {
         #expect(TelecomOperator.mpt.rawValue == "MPT")
         #expect(TelecomOperator.atom.rawValue == "ATOM")
-        #expect(TelecomOperator.ooredoo.rawValue == "Ooredoo")
+        #expect(TelecomOperator.u9.rawValue == "U9")
         #expect(TelecomOperator.mytel.rawValue == "Mytel")
         #expect(TelecomOperator.unknown.rawValue == "Unknown")
     }
@@ -27,7 +27,9 @@ struct TelecomOperatorTests {
         #expect(TelecomOperator.from(rawName: "MPT") == .mpt)
         #expect(TelecomOperator.from(rawName: "atom") == .atom)
         #expect(TelecomOperator.from(rawName: "ATOM") == .atom)
-        #expect(TelecomOperator.from(rawName: "ooredoo") == .ooredoo)
+        #expect(TelecomOperator.from(rawName: "u9") == .u9)
+        #expect(TelecomOperator.from(rawName: "U9") == .u9)
+        #expect(TelecomOperator.from(rawName: "ooredoo") == .u9)
         #expect(TelecomOperator.from(rawName: "mytel") == .mytel)
         #expect(TelecomOperator.from(rawName: "invalid") == .unknown)
         #expect(TelecomOperator.from(rawName: nil) == .unknown)
@@ -40,7 +42,9 @@ struct TelecomOperatorTests {
             #expect(!op.displayName.isEmpty)
             #expect(!op.brandColorToken.isEmpty)
             #expect(!op.logoImageName.isEmpty)
-            #expect(op.brandColor != nil)
+            if op != .unknown {
+                #expect(op.logoAssetName != nil)
+            }
         }
     }
 

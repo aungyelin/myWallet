@@ -20,7 +20,9 @@ public enum Constants {
         public static let minPrefixDetectionDigits: Int = 3
         public static let mpt = TelecomOperator.mpt.rawValue
         public static let atom = TelecomOperator.atom.rawValue
-        public static let ooredoo = TelecomOperator.ooredoo.rawValue
+        public static let u9 = TelecomOperator.u9.rawValue
+        @available(*, deprecated, renamed: "u9")
+        public static let ooredoo = u9
         public static let mytel = TelecomOperator.mytel.rawValue
         public static let unknown = TelecomOperator.unknown.rawValue
         public static let myanmarCountryCode = "+959"

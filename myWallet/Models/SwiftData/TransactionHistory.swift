@@ -35,7 +35,7 @@ public final class TransactionHistory {
     // MARK: - Top-Up Specific Metadata (nil for other transaction types)
     /// Target mobile phone number for mobile top-up recharges.
     public var mobileNumber: String?
-    /// Telecom operator name (e.g. MPT, ATOM, Ooredoo, Mytel).
+    /// Telecom operator name (e.g. MPT, ATOM, U9, Mytel).
     public var operatorName: String?
     /// Description of the recharge denomination or data package.
     public var planDetails: String?

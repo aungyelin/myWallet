@@ -84,6 +84,17 @@ public final class TopUpRepository: TopUpRepositoryProtocol {
         }
     }
 
+    public func getCachedPackages(for operatorName: String) throws -> [PackageEntity] {
+        if let memoryCached = inMemoryCache[operatorName], !memoryCached.isEmpty {
+            return memoryCached
+        }
+        let cached = try fetchCachedPackages(for: operatorName)
+        if !cached.isEmpty {
+            inMemoryCache[operatorName] = cached
+        }
+        return cached
+    }
+
     public func saveTransaction(_ transaction: TransactionHistory) throws {
         modelContext.insert(transaction)
         do {
@@ -93,6 +104,35 @@ public final class TopUpRepository: TopUpRepositoryProtocol {
             logger.error("Failed to save transaction to SwiftData: \(error.localizedDescription, privacy: .public)")
             throw AppError.persistenceFailure(error.localizedDescription)
         }
+    }
+
+    public func performRecharge(
+        phone: String,
+        operatorName: String,
+        planTitle: String,
+        amount: Double
+    ) async throws -> TransactionHistory {
+        let response = try await networkService.submitTopUpRecharge(
+            phone: phone,
+            operatorName: operatorName,
+            planTitle: planTitle,
+            amount: amount
+        )
+        
+        let transaction = TransactionHistory.createTopUp(
+            mobileNumber: response.mobileNumber,
+            operatorName: response.operatorName,
+            planDetails: response.planDetails,
+            amount: response.amount,
+            status: .success,
+            fee: response.fee,
+            date: response.timestamp,
+            referenceNumber: response.referenceNumber
+        )
+        
+        try saveTransaction(transaction)
+        logger.info("Successfully completed and saved recharge for operator: \(operatorName, privacy: .public)")
+        return transaction
     }
 
     // MARK: - Private Helpers
