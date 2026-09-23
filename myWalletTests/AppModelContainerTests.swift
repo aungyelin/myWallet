@@ -103,7 +103,7 @@ struct AppModelContainerTests {
         let context = container.mainContext
 
         let prefix = TelecomPrefixEntity(
-            prefix: "092",
+            prefix: "0925",
             operatorName: "MPT",
             brandDisplayName: "MPT",
             brandLogoName: "mpt_logo"

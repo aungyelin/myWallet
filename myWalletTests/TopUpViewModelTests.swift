@@ -264,7 +264,7 @@ struct TopUpViewModelTests {
     @Test("Debouncing and structured task cancellation: rapid successive keystrokes cancel earlier tasks")
     func debouncingAndTaskCancellation() async {
         let mptPrefix = TelecomPrefixEntity(
-            prefix: "092",
+            prefix: "0925",
             operatorName: "MPT",
             brandDisplayName: "MPT",
             brandLogoName: "mpt"
