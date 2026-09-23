@@ -49,7 +49,17 @@ private struct TransactionHistoryContainerLoadedView: View {
 private struct TransactionHistoryContentView<VM: TransactionHistoryViewModelProtocol>: View {
     @Bindable var viewModel: VM
     @Environment(\.appRouter) private var router
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
     @FocusState private var isSearchFocused: Bool
+
+    private var contentMaxWidth: CGFloat {
+        horizontalSizeClass == .regular ? 900 : .infinity
+    }
+
+    private var isPhonePortrait: Bool {
+        horizontalSizeClass == .compact && verticalSizeClass == .regular
+    }
 
     var body: some View {
         VStack(spacing: LayoutMetrics.spacingMedium) {
@@ -205,23 +215,48 @@ private struct TransactionHistoryContentView<VM: TransactionHistoryViewModelProt
             } else if viewModel.transactions.isEmpty {
                 emptyStateView
             } else {
-                List {
-                    ForEach(viewModel.transactions, id: \.id) { transaction in
-                        Button(action: {
-                            viewModel.selectTransaction(transaction, router: router)
-                        }) {
-                            TransactionRowView(transaction: transaction)
+                ScrollView {
+                    LazyVStack(spacing: 0) {
+                        ForEach(Array(viewModel.transactions.enumerated()), id: \.element.id) { index, transaction in
+                            Button(action: {
+                                viewModel.selectTransaction(transaction, router: router)
+                            }) {
+                                TransactionRowView(transaction: transaction)
+                                    .padding(.horizontal, LayoutMetrics.spacingStandard)
+                                    .padding(.vertical, LayoutMetrics.spacingMedium)
+                            }
+                            .buttonStyle(.plain)
+
+                            if index < viewModel.transactions.count - 1 {
+                                Divider()
+                                    .padding(.leading, 80)
+                            }
                         }
-                        .buttonStyle(.plain)
-                        .listRowBackground(AppColors.cardSurface)
-                        .listRowSeparator(.visible)
                     }
+                    .background(AppColors.cardSurface)
+                    .clipShape(RoundedRectangle(
+                        cornerRadius: isPhonePortrait ? 0 : LayoutMetrics.cornerRadiusLarge,
+                        style: .continuous
+                    ))
+                    .overlay(
+                        RoundedRectangle(
+                            cornerRadius: isPhonePortrait ? 0 : LayoutMetrics.cornerRadiusLarge,
+                            style: .continuous
+                        )
+                            .stroke(AppColors.cardBorder, lineWidth: isPhonePortrait ? 0 : 1)
+                    )
+                    .shadow(
+                        color: .black.opacity(isPhonePortrait ? 0 : 0.04),
+                        radius: isPhonePortrait ? 0 : 12,
+                        y: isPhonePortrait ? 0 : 4
+                    )
+                    .padding(.horizontal, isPhonePortrait ? 0 : LayoutMetrics.screenHorizontalPadding)
+                    .padding(.bottom, LayoutMetrics.spacingLarge)
                 }
-                .listStyle(.plain)
                 .scrollDismissesKeyboard(.interactively)
             }
         }
-        .frame(maxWidth: LayoutMetrics.maxContentWidth)
+        .frame(maxWidth: contentMaxWidth)
         .frame(maxWidth: .infinity)
         .background(AppColors.screenBackground)
         .navigationTitle(String(localized: "transaction_history_title"))

@@ -19,22 +19,23 @@ public struct TransactionRowView: View {
     }
 
     public var body: some View {
-        HStack(spacing: LayoutMetrics.spacingMedium) {
+        HStack(alignment: .top, spacing: LayoutMetrics.spacingMedium) {
             // Left: Operator or Category Icon
             iconView
-                .frame(width: 44, height: 44)
+                .frame(width: 48, height: 48)
 
             // Center: Title, Subtitle, and Formatted Timestamp
             VStack(alignment: .leading, spacing: 3) {
                 Text(titleText)
-                    .font(.body)
-                    .fontWeight(.medium)
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
                     .foregroundStyle(.primary)
-                    .lineLimit(1)
+                    .lineLimit(2)
+                    .multilineTextAlignment(.leading)
 
                 if let subtitle = subtitleText {
                     Text(subtitle)
-                        .font(.subheadline)
+                        .font(.callout)
                         .foregroundStyle(.secondary)
                         .lineLimit(1)
                 }
@@ -42,32 +43,36 @@ public struct TransactionRowView: View {
                 Text(AppDateFormatter.formatDateTime(item.date))
                     .font(.caption)
                     .foregroundStyle(.tertiary)
+                    .lineLimit(1)
             }
-
-            Spacer(minLength: LayoutMetrics.spacingSmall)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .layoutPriority(1)
 
             // Right: Formatted Amount & Status Capsule
             VStack(alignment: .trailing, spacing: 4) {
                 Text(amountText)
-                    .font(.callout)
+                    .font(.subheadline)
                     .fontWeight(.semibold)
                     .foregroundStyle(.primary)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
 
                 HStack(spacing: 4) {
                     Image(systemName: item.parsedStatus.systemIconName)
-                        .font(.system(size: 9, weight: .bold))
+                        .font(.system(size: 8, weight: .bold))
                     Text(item.parsedStatus.localizedTitle)
-                        .font(.caption2)
+                        .font(.caption)
                         .fontWeight(.medium)
                 }
                 .foregroundStyle(item.parsedStatus.statusColor)
-                .padding(.horizontal, 6)
-                .padding(.vertical, 2)
+                .padding(.horizontal, 8)
+                .padding(.vertical, 4)
                 .background(item.parsedStatus.statusColor.opacity(0.12))
                 .clipShape(Capsule())
+                .fixedSize(horizontal: true, vertical: false)
             }
+            .frame(minWidth: 84, alignment: .trailing)
         }
-        .padding(.vertical, LayoutMetrics.spacingSmall)
         .contentShape(Rectangle())
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(titleText), \(amountText), \(item.parsedStatus.localizedTitle)")
