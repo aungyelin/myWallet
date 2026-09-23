@@ -8,14 +8,14 @@ The main user flow is shown below:
 
 <table>
   <tr>
-    <td align="center" width="33%"><strong>Home</strong><br><img src="screenshots/01-home.png" alt="Home screen"></td>
-    <td align="center" width="33%"><strong>Top Up</strong><br><img src="screenshots/02-topup-package-selection.png" alt="Top-up package selection screen"></td>
-    <td align="center" width="33%"><strong>Confirmation</strong><br><img src="screenshots/03-confirmation.png" alt="Confirmation screen"></td>
+    <td align="center" width="33%"><strong>Home</strong><br><img src="screenshots/01-home.PNG" alt="Home screen"></td>
+    <td align="center" width="33%"><strong>Top Up</strong><br><img src="screenshots/02-topup-package-selection.PNG" alt="Top-up package selection screen"></td>
+    <td align="center" width="33%"><strong>Confirmation</strong><br><img src="screenshots/03-confirmation.PNG" alt="Confirmation screen"></td>
   </tr>
   <tr>
-    <td align="center" width="33%"><strong>Success</strong><br><img src="screenshots/04-success.png" alt="Recharge success screen"></td>
-    <td align="center" width="33%"><strong>History</strong><br><img src="screenshots/05-transaction-history.png" alt="Transaction history screen"></td>
-    <td align="center" width="33%"><strong>Details</strong><br><img src="screenshots/06-transaction-details.png" alt="Transaction details screen"></td>
+    <td align="center" width="33%"><strong>Success</strong><br><img src="screenshots/04-success.PNG" alt="Recharge success screen"></td>
+    <td align="center" width="33%"><strong>History</strong><br><img src="screenshots/05-transaction-history.PNG" alt="Transaction history screen"></td>
+    <td align="center" width="33%"><strong>Details</strong><br><img src="screenshots/06-transaction-details.PNG" alt="Transaction details screen"></td>
   </tr>
 </table>
 
