@@ -1352,6 +1352,17 @@
         }
       }
     },
+    "transaction_not_found" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transaction not found."
+          }
+        }
+      }
+    },
     "transaction_type_payment" : {
       "extractionState" : "manual",
       "localizations" : {

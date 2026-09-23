@@ -52,7 +52,7 @@ public final class TransactionDetailViewModel: TransactionDetailViewModelProtoco
             self.transaction = try transactionRepository.getTransaction(by: referenceNumber)
             isLoading = false
             if transaction == nil {
-                errorMessage = "Transaction \(referenceNumber) not found."
+                errorMessage = String(localized: "transaction_not_found")
             }
         } catch {
             logger.error("Failed to load transaction \(self.referenceNumber, privacy: .public): \(error.localizedDescription, privacy: .public)")

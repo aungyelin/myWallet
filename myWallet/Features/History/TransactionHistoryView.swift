@@ -52,6 +52,7 @@ private struct TransactionHistoryContentView<VM: TransactionHistoryViewModelProt
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.verticalSizeClass) private var verticalSizeClass
     @FocusState private var isSearchFocused: Bool
+    @State private var historyScrollPosition: UUID?
 
     private var contentMaxWidth: CGFloat {
         horizontalSizeClass == .regular ? 900 : .infinity
@@ -226,6 +227,7 @@ private struct TransactionHistoryContentView<VM: TransactionHistoryViewModelProt
                                     .padding(.vertical, LayoutMetrics.spacingMedium)
                             }
                             .buttonStyle(.plain)
+                            .id(transaction.id)
 
                             if index < viewModel.transactions.count - 1 {
                                 Divider()
@@ -254,6 +256,7 @@ private struct TransactionHistoryContentView<VM: TransactionHistoryViewModelProt
                     .padding(.bottom, LayoutMetrics.spacingLarge)
                 }
                 .scrollDismissesKeyboard(.interactively)
+                .scrollPosition(id: $historyScrollPosition)
             }
         }
         .frame(maxWidth: contentMaxWidth)
@@ -263,9 +266,6 @@ private struct TransactionHistoryContentView<VM: TransactionHistoryViewModelProt
         .navigationBarTitleDisplayMode(.inline)
         .sheet(isPresented: $viewModel.isFilterSheetPresented) {
             TransactionFilterSheetView(viewModel: viewModel)
-        }
-        .onAppear {
-            viewModel.loadTransactions()
         }
     }
 

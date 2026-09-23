@@ -83,8 +83,8 @@ struct BalanceCardView: View {
 #Preview("BalanceCardView - Visible") {
     VStack {
         BalanceCardView(
-            title: "Total Balance",
-            formattedBalance: "1,250,000 Ks",
+            title: String(localized: "home_balance_title"),
+            formattedBalance: "1,250,000 \(String(localized: "home_balance_currency"))",
             isHidden: false,
             onToggleVisibility: {}
         )
@@ -98,8 +98,8 @@ struct BalanceCardView: View {
 #Preview("BalanceCardView - Hidden") {
     VStack {
         BalanceCardView(
-            title: "Total Balance",
-            formattedBalance: "1,250,000 Ks",
+            title: String(localized: "home_balance_title"),
+            formattedBalance: "1,250,000 \(String(localized: "home_balance_currency"))",
             isHidden: true,
             onToggleVisibility: {}
         )

@@ -32,6 +32,7 @@ public final class TopUpViewModel: TopUpViewModelProtocol {
 
     private let debounceNanoseconds: UInt64
     private var debounceTask: Task<Void, Never>?
+    private var hasLoadedInitialData = false
 
     public init(
         telecomRepository: TelecomRepositoryProtocol,
@@ -68,6 +69,9 @@ public final class TopUpViewModel: TopUpViewModelProtocol {
     }
 
     public func onAppear() async {
+        guard !hasLoadedInitialData else { return }
+        hasLoadedInitialData = true
+
         // Pre-fetch prefix and package catalogs in background if needed
         async let prefetchPrefixes: () = telecomRepository.prefetchPrefixes()
         async let prefetchPackages: () = topUpRepository.prefetchPackages()

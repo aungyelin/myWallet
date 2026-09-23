@@ -58,7 +58,7 @@ extension ScreenHeaderView where Accessory == EmptyView {
 
 #Preview("ScreenHeaderView - iPhone") {
     VStack {
-        ScreenHeaderView(title: "myWallet", subtitle: "Welcome back") {
+        ScreenHeaderView(title: String(localized: "app_name"), subtitle: String(localized: "home_screen_title")) {
             Image(systemName: "bell.badge.fill")
                 .font(.title3)
                 .foregroundStyle(Color.accentColor)
@@ -68,5 +68,5 @@ extension ScreenHeaderView where Accessory == EmptyView {
 }
 
 #Preview("ScreenHeaderView - iPad", traits: .fixedLayout(width: 800, height: 200)) {
-    ScreenHeaderView(title: "Profile")
+    ScreenHeaderView(title: String(localized: "nav_profile"))
 }

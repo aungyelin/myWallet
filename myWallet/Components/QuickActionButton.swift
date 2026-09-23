@@ -75,22 +75,22 @@ struct QuickActionButton: View {
 #Preview("QuickActionButton - Alignment Comparison") {
     HStack(alignment: .top, spacing: LayoutMetrics.spacingMedium) {
         QuickActionButton(
-            title: "Top-Up",
+            title: String(localized: "btn_top_up"),
             iconName: "iphone.gen3",
             action: {}
         )
         QuickActionButton(
-            title: "Transaction\nHistory",
+            title: String(localized: "btn_history"),
             iconName: "clock.arrow.circlepath",
             action: {}
         )
         QuickActionButton(
-            title: "မိုဘိုင်းလ်\nငွေဖြည့်ခြင်း",
+            title: String(localized: "top_up_title"),
             iconName: "qrcode.viewfinder",
             action: {}
         )
         QuickActionButton(
-            title: "Scan",
+            title: String(localized: "action_recharge"),
             iconName: "viewfinder",
             action: {}
         )
