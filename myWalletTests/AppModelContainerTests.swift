@@ -127,7 +127,7 @@ struct AppModelContainerTests {
         let fetchedPackages = try context.fetch(FetchDescriptor<PackageEntity>())
 
         #expect(fetchedPrefixes.count == 1)
-        #expect(fetchedPrefixes.first?.prefix == "092")
+        #expect(fetchedPrefixes.first?.prefix == "0925")
         #expect(fetchedPackages.count == 1)
         #expect(fetchedPackages.first?.id == "pkg_test_1")
     }

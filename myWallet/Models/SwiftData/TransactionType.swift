@@ -26,7 +26,7 @@ public enum TransactionType: String, Codable, CaseIterable, Sendable {
     public var systemIconName: String {
         switch self {
         case .topUp:
-            return "iphone.badge.play"
+            return "iphone.gen3"
         case .transfer:
             return "arrow.left.arrow.right"
         case .payment:

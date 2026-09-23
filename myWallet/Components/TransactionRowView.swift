@@ -19,8 +19,8 @@ public struct TransactionRowView: View {
     }
 
     public var body: some View {
-        HStack(alignment: .top, spacing: LayoutMetrics.spacingMedium) {
-            // Left: Operator or Category Icon
+        HStack(alignment: .center, spacing: LayoutMetrics.spacingMedium) {
+            // Left: Transaction category icon
             iconView
                 .frame(width: 48, height: 48)
 
@@ -71,7 +71,7 @@ public struct TransactionRowView: View {
                 .clipShape(Capsule())
                 .fixedSize(horizontal: true, vertical: false)
             }
-            .frame(minWidth: 84, alignment: .trailing)
+            .frame(width: 100, alignment: .trailing)
         }
         .contentShape(Rectangle())
         .accessibilityElement(children: .combine)
@@ -82,7 +82,13 @@ public struct TransactionRowView: View {
     private var iconView: some View {
         switch item.parsedType {
         case .topUp:
-            TelecomLogoView(operatorType: item.operatorType, size: 40)
+            Circle()
+                .fill(Color.accentColor.opacity(0.12))
+                .overlay(
+                    Image(systemName: item.parsedType.systemIconName)
+                        .foregroundStyle(Color.accentColor)
+                        .font(.system(size: 18, weight: .semibold))
+                )
         case .transfer:
             Circle()
                 .fill(Color.blue.opacity(0.12))
@@ -105,7 +111,7 @@ public struct TransactionRowView: View {
     private var titleText: String {
         switch item.parsedType {
         case .topUp:
-            return item.planDetails ?? item.operatorName ?? item.parsedType.localizedTitle
+            return item.planDetails ?? item.parsedType.localizedTitle
         case .transfer:
             return item.recipientName ?? item.counterparty
         case .payment:
@@ -116,7 +122,7 @@ public struct TransactionRowView: View {
     private var subtitleText: String? {
         switch item.parsedType {
         case .topUp:
-            return item.mobileNumber
+            return nil
         case .transfer:
             return item.counterparty
         case .payment:

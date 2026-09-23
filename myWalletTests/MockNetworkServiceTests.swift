@@ -17,10 +17,10 @@ struct MockNetworkServiceTests {
     func fetchTelecomPrefixesSuccess() async throws {
         let prefixes = try await service.fetchTelecomPrefixes()
         #expect(!prefixes.isEmpty)
-        #expect(prefixes.contains(where: { $0.operatorName == "MPT" && $0.prefix == "092" }))
-        #expect(prefixes.contains(where: { $0.operatorName == "ATOM" && $0.prefix == "097" }))
-        #expect(prefixes.contains(where: { $0.operatorName == "U9" && $0.prefix == "099" }))
-        #expect(prefixes.contains(where: { $0.operatorName == "Mytel" && $0.prefix == "096" }))
+        #expect(prefixes.contains(where: { $0.operatorName == "MPT" && $0.prefix == "0925" }))
+        #expect(prefixes.contains(where: { $0.operatorName == "ATOM" && $0.prefix == "0974" }))
+        #expect(prefixes.contains(where: { $0.operatorName == "U9" && $0.prefix == "0994" }))
+        #expect(prefixes.contains(where: { $0.operatorName == "Mytel" && $0.prefix == "0966" }))
     }
 
     @Test("Fetch packages successfully returns operator packages")

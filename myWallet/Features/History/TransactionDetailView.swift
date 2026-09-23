@@ -280,7 +280,13 @@ private struct TransactionDetailContentView<VM: TransactionDetailViewModelProtoc
     private func iconView(for transaction: TransactionHistory) -> some View {
         switch transaction.parsedType {
         case .topUp:
-            TelecomLogoView(operatorType: transaction.operatorType, size: 60)
+            Circle()
+                .fill(Color.accentColor.opacity(0.12))
+                .overlay(
+                    Image(systemName: transaction.parsedType.systemIconName)
+                        .foregroundStyle(Color.accentColor)
+                        .font(.system(size: 28, weight: .semibold))
+                )
         case .transfer:
             Circle()
                 .fill(Color.blue.opacity(0.12))
