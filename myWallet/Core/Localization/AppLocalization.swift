@@ -33,14 +33,6 @@ public enum AppLocalization {
         return Bundle.main
     }
 
-    public static var currentBundle: Bundle {
-        bundle(for: currentLanguageCode)
-    }
-
-    public static var currentLocale: Locale {
-        Locale(identifier: currentLanguageCode)
-    }
-
     public static func string(
         _ key: String,
         defaultValue: String? = nil,

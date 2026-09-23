@@ -12,11 +12,8 @@ import SwiftData
 public protocol TelecomRepositoryProtocol: AnyObject {
     
     func detectOperator(for rawPhoneNumber: String) async throws -> TelecomPrefixEntity?
-
     func getPrefixes() async throws -> [TelecomPrefixEntity]
-
     func prefetchPrefixes() async
-    
     func sanitizeAndNormalize(_ input: String) -> String
     
 }

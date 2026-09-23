@@ -11,11 +11,8 @@ import SwiftData
 @main
 struct myWalletApp: App {
     private let container: AppContainer
-    @State private var languageManager: LanguageManager
 
     init() {
-        _languageManager = State(initialValue: LanguageManager.shared)
-
         do {
             let modelContainer = try AppModelContainer.createContainer()
             self.container = AppContainer(modelContainer: modelContainer)
@@ -27,15 +24,10 @@ struct myWalletApp: App {
     var body: some Scene {
         WindowGroup {
             RootTabView(router: container.router)
-                .environment(container)
                 .environment(\.appContainer, container)
-                .environment(container.router)
-                .environment(\.appRouter, container.router)
-                .environment(ThemeManager.shared)
-                .environment(\.themeManager, ThemeManager.shared)
-                .environment(languageManager)
-                .environment(\.languageManager, languageManager)
-                .environment(\.locale, languageManager.currentLanguage.locale)
+                .environment(\.themeManager, container.themeManager as! ThemeManager)
+                .environment(\.languageManager, container.languageManager)
+                .environment(\.locale, container.languageManager.currentLanguage.locale)
                 .task(priority: .background) {
                     await preloadData()
                 }

@@ -7,12 +7,12 @@
 
 import SwiftUI
 
-struct TopUpDetailView: View {
+struct TopUpDetailView<VM: TopUpDetailViewModelProtocol>: View {
     let params: TopUpCheckoutParams
     @Environment(\.appContainer) private var appContainer
-    private let customViewModel: (any TopUpDetailViewModelProtocol)?
+    private let customViewModel: VM?
 
-    public init(params: TopUpCheckoutParams, viewModel: (any TopUpDetailViewModelProtocol)? = nil) {
+    init(params: TopUpCheckoutParams, viewModel: VM) {
         self.params = params
         self.customViewModel = viewModel
     }
@@ -28,14 +28,18 @@ struct TopUpDetailView: View {
     }
 }
 
+extension TopUpDetailView where VM == TopUpDetailViewModel {
+    init(params: TopUpCheckoutParams) {
+        self.params = params
+        self.customViewModel = nil
+    }
+}
+
 private struct TopUpDetailContainerLoadedView: View {
     @State private var viewModel: TopUpDetailViewModel
 
     init(params: TopUpCheckoutParams, container: any AppContainerProtocol) {
-        _viewModel = State(wrappedValue: TopUpDetailViewModel(
-            params: params,
-            topUpRepository: container.topUpRepository
-        ))
+        _viewModel = State(wrappedValue: container.makeTopUpDetailViewModel(params: params))
     }
 
     var body: some View {
@@ -43,9 +47,8 @@ private struct TopUpDetailContainerLoadedView: View {
     }
 }
 
-private struct TopUpDetailContentView: View {
-    let viewModel: any TopUpDetailViewModelProtocol
-    @Environment(\.appRouter) private var router
+private struct TopUpDetailContentView<VM: TopUpDetailViewModelProtocol>: View {
+    @Bindable var viewModel: VM
     @State private var showErrorAlert: Bool = false
 
     var body: some View {
@@ -133,7 +136,7 @@ private struct TopUpDetailContentView: View {
                 // Primary Payment Confirmation Button
                 Button(action: {
                     Task {
-                        await viewModel.confirmPayment(router: router)
+                        await viewModel.confirmPayment()
                         if viewModel.errorMessage != nil {
                             showErrorAlert = true
                         }

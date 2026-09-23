@@ -37,7 +37,8 @@ private struct TransactionHistoryContainerLoadedView: View {
 
     init(container: any AppContainerProtocol) {
         _viewModel = State(wrappedValue: TransactionHistoryViewModel(
-            transactionRepository: container.transactionRepository
+            transactionRepository: container.transactionRepository,
+            router: container.appRouter
         ))
     }
 
@@ -48,7 +49,7 @@ private struct TransactionHistoryContainerLoadedView: View {
 
 private struct TransactionHistoryContentView<VM: TransactionHistoryViewModelProtocol>: View {
     @Bindable var viewModel: VM
-    @Environment(\.appRouter) private var router
+    @Environment(\.appContainer) private var appContainer
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.verticalSizeClass) private var verticalSizeClass
     @FocusState private var isSearchFocused: Bool
@@ -220,7 +221,7 @@ private struct TransactionHistoryContentView<VM: TransactionHistoryViewModelProt
                     LazyVStack(spacing: 0) {
                         ForEach(Array(viewModel.transactions.enumerated()), id: \.element.id) { index, transaction in
                             Button(action: {
-                                viewModel.selectTransaction(transaction, router: router)
+                                viewModel.selectTransaction(transaction)
                             }) {
                                 TransactionRowView(transaction: transaction)
                                     .padding(.horizontal, LayoutMetrics.spacingStandard)
@@ -322,7 +323,7 @@ private struct TransactionHistoryContentView<VM: TransactionHistoryViewModelProt
                 .padding(.top, LayoutMetrics.spacingSmall)
             } else {
                 Button(action: {
-                    router?.navigate(to: .topUp)
+                    viewModel.navigateToTopUp()
                 }) {
                     Text(AppLocalization.string("btn_top_up"))
                         .font(.subheadline)

@@ -25,4 +25,5 @@ final class MockThemeManager: ThemeManagerProtocol {
         selectedThemes.append(theme)
         currentTheme = theme
     }
+    
 }

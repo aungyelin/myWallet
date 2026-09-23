@@ -23,17 +23,6 @@ public final class TransactionRepository: TransactionRepositoryProtocol {
         self.modelContext = modelContext
     }
 
-    public func getAllTransactions() throws -> [TransactionHistory] {
-        try getTransactions(
-            query: nil,
-            operatorFilter: nil,
-            typeFilter: nil,
-            statusFilter: nil,
-            startDate: nil,
-            endDate: nil
-        )
-    }
-
     public func getTransactions(
         query: String?,
         operatorFilter: TelecomOperator?,
@@ -114,7 +103,7 @@ public final class TransactionRepository: TransactionRepositoryProtocol {
         modelContext.insert(transaction)
         do {
             try modelContext.save()
-            logger.info("Transaction \(transaction.referenceNumber, privacy: .public) persisted successfully.")
+            logger.info("Transaction persisted successfully.")
         } catch {
             logger.error("Failed to persist transaction to SwiftData: \(error.localizedDescription, privacy: .public)")
             throw AppError.persistenceFailure(error.localizedDescription)

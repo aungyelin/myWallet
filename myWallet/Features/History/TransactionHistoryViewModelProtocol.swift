@@ -31,6 +31,7 @@ public protocol TransactionHistoryViewModelProtocol: AnyObject, Observable {
     func selectDateFilter(_ filter: TransactionDateFilter)
     func applyCustomDateRange(start: Date, end: Date)
     func resetFilters()
-    func selectTransaction(_ transaction: TransactionHistory, router: (any AppRouterProtocol)?)
+    func navigateToTopUp()
+    func selectTransaction(_ transaction: TransactionHistory)
     
 }

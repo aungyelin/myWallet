@@ -32,6 +32,7 @@ public final class TransactionHistoryViewModel: TransactionHistoryViewModelProto
     }
 
     private let transactionRepository: TransactionRepositoryProtocol
+    private let router: any AppRouterProtocol
     public let debounceNanoseconds: UInt64
     private var debounceTask: Task<Void, Never>?
     private let logger = Logger(
@@ -41,9 +42,11 @@ public final class TransactionHistoryViewModel: TransactionHistoryViewModelProto
 
     public init(
         transactionRepository: TransactionRepositoryProtocol,
+        router: any AppRouterProtocol,
         debounceNanoseconds: UInt64 = 150_000_000
     ) {
         self.transactionRepository = transactionRepository
+        self.router = router
         self.debounceNanoseconds = debounceNanoseconds
         loadTransactions()
     }
@@ -116,8 +119,12 @@ public final class TransactionHistoryViewModel: TransactionHistoryViewModelProto
         loadTransactions()
     }
 
-    public func selectTransaction(_ transaction: TransactionHistory, router: (any AppRouterProtocol)?) {
-        router?.navigate(to: .transactionDetail(referenceNumber: transaction.referenceNumber))
+    public func navigateToTopUp() {
+        router.navigate(to: .topUp)
+    }
+
+    public func selectTransaction(_ transaction: TransactionHistory) {
+        router.navigate(to: .transactionDetail(referenceNumber: transaction.referenceNumber))
     }
     
 }

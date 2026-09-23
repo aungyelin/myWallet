@@ -83,4 +83,5 @@ final class ThemeManagerTests: XCTestCase {
         
         XCTAssertNotNil(container.themeManager)
     }
+    
 }

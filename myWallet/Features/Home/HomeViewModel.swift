@@ -14,23 +14,18 @@ public final class HomeViewModel: HomeViewModelProtocol {
     
     public private(set) var isBalanceHidden: Bool
     public private(set) var balance: Double
+    private let router: any AppRouterProtocol
     
     public var formattedBalance: String {
         CurrencyFormatter.format(balance)
     }
     
-    public var displayBalance: String {
-        if isBalanceHidden {
-            return AppLocalization.string("home_balance_hidden_mask")
-        } else {
-            return formattedBalance
-        }
-    }
-    
     public init(
+        router: any AppRouterProtocol,
         initialBalance: Double = 1_250_000,
         isBalanceHidden: Bool = false
     ) {
+        self.router = router
         self.balance = initialBalance
         self.isBalanceHidden = isBalanceHidden
     }
@@ -39,12 +34,12 @@ public final class HomeViewModel: HomeViewModelProtocol {
         isBalanceHidden.toggle()
     }
     
-    public func navigateToTopUp(router: (any AppRouterProtocol)?) {
-        router?.navigate(to: .topUp)
+    public func navigateToTopUp() {
+        router.navigate(to: .topUp)
     }
-    
-    public func navigateToHistory(router: (any AppRouterProtocol)?) {
-        router?.navigate(to: .transactionHistory)
+
+    public func navigateToHistory() {
+        router.navigate(to: .transactionHistory)
     }
     
 }

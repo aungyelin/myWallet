@@ -42,11 +42,7 @@ private struct TransactionDetailContainerLoadedView: View {
     @State private var viewModel: TransactionDetailViewModel
 
     init(referenceNumber: String, container: any AppContainerProtocol) {
-        _viewModel = State(wrappedValue: TransactionDetailViewModel(
-            referenceNumber: referenceNumber,
-            transactionRepository: container.transactionRepository,
-            router: container.appRouter
-        ))
+        _viewModel = State(wrappedValue: container.makeTransactionDetailViewModel(referenceNumber: referenceNumber))
     }
 
     var body: some View {
@@ -57,7 +53,7 @@ private struct TransactionDetailContainerLoadedView: View {
 @MainActor
 private struct TransactionDetailContentView<VM: TransactionDetailViewModelProtocol>: View {
     @Bindable var viewModel: VM
-    @Environment(\.appRouter) private var router
+    @Environment(\.appContainer) private var appContainer
 
     var body: some View {
         ScrollView {
@@ -240,7 +236,7 @@ private struct TransactionDetailContentView<VM: TransactionDetailViewModelProtoc
                             .font(.headline)
                             .foregroundStyle(.secondary)
 
-                        Button(action: { router?.pop() }) {
+                        Button(action: { appContainer?.appRouter.pop() }) {
                             Text(AppLocalization.string("action_done"))
                                 .font(.headline)
                                 .padding(.horizontal, 24)

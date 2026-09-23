@@ -14,8 +14,8 @@ import SwiftData
 @MainActor
 struct TransactionRepositoryTests {
     
-    @Test("Saves and fetches all transactions sorted by date descending")
-    func saveAndFetchAll() throws {
+    @Test("Saves and fetches transactions sorted by date descending")
+    func saveAndFetchSorted() throws {
         let container = try AppModelContainer.createInMemoryContainer()
         let repository = TransactionRepository(modelContext: container.mainContext)
         
@@ -39,7 +39,7 @@ struct TransactionRepositoryTests {
         try repository.saveTransaction(txn1)
         try repository.saveTransaction(txn2)
         
-        let all = try repository.getAllTransactions()
+        let all = try repository.getTransactions()
         #expect(all.count == 2)
         #expect(all.first?.referenceNumber == txn2.referenceNumber) // Newer date first
         #expect(all.last?.referenceNumber == txn1.referenceNumber)
@@ -229,4 +229,5 @@ struct TransactionRepositoryTests {
         let notFound = try repository.getTransaction(by: "NON-EXISTENT")
         #expect(notFound == nil)
     }
+    
 }

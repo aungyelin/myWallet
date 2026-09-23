@@ -25,6 +25,7 @@ public final class TopUpViewModel: TopUpViewModelProtocol {
     private var allPackagesForCurrentOperator: [PackageEntity] = []
     private let telecomRepository: TelecomRepositoryProtocol
     private let topUpRepository: TopUpRepositoryProtocol
+    private let router: any AppRouterProtocol
     private let logger = Logger(
         subsystem: Constants.Logging.subsystem,
         category: "TopUpViewModel"
@@ -37,11 +38,13 @@ public final class TopUpViewModel: TopUpViewModelProtocol {
     public init(
         telecomRepository: TelecomRepositoryProtocol,
         topUpRepository: TopUpRepositoryProtocol,
+        router: any AppRouterProtocol,
         initialPhone: String = "",
         debounceNanoseconds: UInt64 = 150_000_000
     ) {
         self.telecomRepository = telecomRepository
         self.topUpRepository = topUpRepository
+        self.router = router
         self.phoneNumber = initialPhone
         self.debounceNanoseconds = debounceNanoseconds
     }
@@ -140,7 +143,7 @@ public final class TopUpViewModel: TopUpViewModelProtocol {
         self.selectedCategory = category
     }
 
-    public func selectTopUpAmount(_ amount: Double, router: (any AppRouterProtocol)?) {
+    public func selectTopUpAmount(_ amount: Double) {
         guard validateInput() else { return }
 
         let params = TopUpCheckoutParams(
@@ -150,10 +153,10 @@ public final class TopUpViewModel: TopUpViewModelProtocol {
             amount: amount,
             fee: 0.0
         )
-        router?.navigate(to: .topUpDetail(params))
+        router.navigate(to: .topUpDetail(params))
     }
 
-    public func selectPackage(_ package: PackageEntity, router: (any AppRouterProtocol)?) {
+    public func selectPackage(_ package: PackageEntity) {
         guard validateInput() else { return }
 
         let params = TopUpCheckoutParams(
@@ -163,7 +166,7 @@ public final class TopUpViewModel: TopUpViewModelProtocol {
             amount: package.amount,
             fee: 0.0
         )
-        router?.navigate(to: .topUpDetail(params))
+        router.navigate(to: .topUpDetail(params))
     }
 
     public func clearValidationError() {

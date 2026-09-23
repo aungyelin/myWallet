@@ -35,11 +35,8 @@ public final class TelecomRepository: TelecomRepositoryProtocol {
             // 1. Network First: Try fetching latest telecom prefixes from server
             let remoteDTOs = try await networkService.fetchTelecomPrefixes()
 
-            // 2. Persist fresh data into SwiftData
-            for dto in remoteDTOs {
-                modelContext.insert(dto.toEntity())
-            }
-            saveContext()
+            // 2. Replace the local catalog snapshot so refreshes cannot duplicate records.
+            try replacePrefixCatalog(with: remoteDTOs)
             logger.info("Successfully refreshed telecom prefixes from network.")
 
             let freshCached = try fetchCachedPrefixes()
@@ -66,10 +63,7 @@ public final class TelecomRepository: TelecomRepositoryProtocol {
     public func prefetchPrefixes() async {
         do {
             let dtos = try await networkService.fetchTelecomPrefixes()
-            for dto in dtos {
-                modelContext.insert(dto.toEntity())
-            }
-            saveContext()
+            try replacePrefixCatalog(with: dtos)
             self.cachedPrefixes = (try? fetchCachedPrefixes()) ?? []
             logger.info("Successfully pre-loaded telecom prefixes in background.")
         } catch is CancellationError {
@@ -94,11 +88,6 @@ public final class TelecomRepository: TelecomRepositoryProtocol {
         if prefixes.isEmpty {
             prefixes = try fetchCachedPrefixes()
             self.cachedPrefixes = prefixes
-        }
-
-        // 3. If local cache is completely empty, fall back to initial sync
-        if prefixes.isEmpty {
-            prefixes = try await getPrefixes()
         }
 
         let sortedPrefixes = prefixes.sorted { $0.prefix.count > $1.prefix.count }
@@ -162,11 +151,16 @@ public final class TelecomRepository: TelecomRepositoryProtocol {
         return try modelContext.fetch(descriptor)
     }
 
-    private func saveContext() {
+    private func replacePrefixCatalog(with dtos: [TelecomPrefixDTO]) throws {
+        let existing = try modelContext.fetch(FetchDescriptor<TelecomPrefixEntity>())
+        existing.forEach(modelContext.delete)
+        dtos.forEach { modelContext.insert($0.toEntity()) }
+
         do {
             try modelContext.save()
         } catch {
-            logger.error("Failed to save SwiftData context in TelecomRepository: \(error.localizedDescription, privacy: .public)")
+            logger.error("Failed to save telecom prefix catalog to SwiftData.")
+            throw AppError.persistenceFailure(error.localizedDescription)
         }
     }
     

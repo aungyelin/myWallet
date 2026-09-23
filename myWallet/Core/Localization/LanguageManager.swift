@@ -37,11 +37,11 @@ public final class LanguageManager: LanguageManagerProtocol {
 
 @MainActor
 private struct LanguageManagerKey: EnvironmentKey {
-    @MainActor static let defaultValue: LanguageManager = LanguageManager.shared
+    @MainActor static let defaultValue: any LanguageManagerProtocol = LanguageManager.shared
 }
 
 extension EnvironmentValues {
-    public var languageManager: LanguageManager {
+    public var languageManager: any LanguageManagerProtocol {
         get { self[LanguageManagerKey.self] }
         set { self[LanguageManagerKey.self] = newValue }
     }

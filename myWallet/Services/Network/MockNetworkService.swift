@@ -40,13 +40,6 @@ public final class MockNetworkService: MockNetworkServiceProtocol {
         )
     }
 
-    public func fetchSeedTransactions() async throws -> [TransactionHistoryDTO] {
-        try await loadAndDecode(
-            filename: Constants.ResourceFiles.sampleTransactions,
-            as: [TransactionHistoryDTO].self
-        )
-    }
-
     public func submitTopUpRecharge(
         phone: String,
         operatorName: String,
@@ -58,7 +51,7 @@ public final class MockNetworkService: MockNetworkServiceProtocol {
         }
         
         let referenceNumber = ReferenceNumberGenerator.generate()
-        logger.info("Mock API: processed top-up recharge for \(operatorName, privacy: .public), ref: \(referenceNumber, privacy: .public)")
+        logger.info("Mock API: processed top-up recharge successfully.")
         
         return TopUpRechargeResponseDTO(
             referenceNumber: referenceNumber,

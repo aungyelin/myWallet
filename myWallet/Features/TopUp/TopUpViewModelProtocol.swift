@@ -24,8 +24,8 @@ public protocol TopUpViewModelProtocol: AnyObject, Observable {
     func onAppear() async
     func onPhoneNumberChanged(_ newNumber: String) async
     func selectCategory(_ category: String)
-    func selectTopUpAmount(_ amount: Double, router: (any AppRouterProtocol)?)
-    func selectPackage(_ package: PackageEntity, router: (any AppRouterProtocol)?)
+    func selectTopUpAmount(_ amount: Double)
+    func selectPackage(_ package: PackageEntity)
     func clearValidationError()
     
 }

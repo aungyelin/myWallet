@@ -15,7 +15,6 @@ public enum TelecomOperator: String, CaseIterable, Codable, Sendable {
     case mytel = "Mytel"
     case unknown = "Unknown"
     
-    /// User-facing display title for the operator.
     public var displayName: String {
         switch self {
         case .mpt:
@@ -31,7 +30,6 @@ public enum TelecomOperator: String, CaseIterable, Codable, Sendable {
         }
     }
 
-    /// Semantic brand accent color for UI badges, active borders, and card accents.
     public var brandColor: Color {
         switch self {
         case .mpt:
@@ -47,7 +45,6 @@ public enum TelecomOperator: String, CaseIterable, Codable, Sendable {
         }
     }
     
-    /// Suggested brand accent color token name.
     public var brandColorToken: String {
         switch self {
         case .mpt:
@@ -63,7 +60,6 @@ public enum TelecomOperator: String, CaseIterable, Codable, Sendable {
         }
     }
 
-    /// Asset catalog image set name for the telecom operator logo.
     public var logoAssetName: String? {
         switch self {
         case .mpt:
@@ -79,7 +75,6 @@ public enum TelecomOperator: String, CaseIterable, Codable, Sendable {
         }
     }
     
-    /// Default SF Symbol or asset logo name representing the telecom brand.
     public var logoImageName: String {
         switch self {
         case .mpt:
@@ -95,7 +90,6 @@ public enum TelecomOperator: String, CaseIterable, Codable, Sendable {
         }
     }
     
-    /// Safe initializer resolving from any raw or case-insensitive string.
     public static func from(rawName: String?) -> TelecomOperator {
         guard let rawName = rawName?.trimmingCharacters(in: .whitespacesAndNewlines), !rawName.isEmpty else {
             return .unknown

@@ -47,7 +47,6 @@ public enum Constants {
     public enum ResourceFiles {
         public static let telecomPrefixes = "telecom_prefixes"
         public static let packages = "packages"
-        public static let sampleTransactions = "sample_transactions"
         public static let jsonExtension = "json"
     }
 

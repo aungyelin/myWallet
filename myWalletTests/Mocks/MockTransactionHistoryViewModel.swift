@@ -71,8 +71,9 @@ final class MockTransactionHistoryViewModel: TransactionHistoryViewModelProtocol
         searchQuery = ""
     }
 
-    func selectTransaction(_ transaction: TransactionHistory, router: (any AppRouterProtocol)?) {
+    func navigateToTopUp() {}
+
+    func selectTransaction(_ transaction: TransactionHistory) {
         selectedTransaction = transaction
-        router?.navigate(to: .transactionDetail(referenceNumber: transaction.referenceNumber))
     }
 }
