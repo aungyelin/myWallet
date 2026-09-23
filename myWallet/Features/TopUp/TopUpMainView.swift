@@ -93,7 +93,7 @@ private struct TopUpContentView<VM: TopUpViewModelProtocol>: View {
                     // Phone Number Field Card
                     HStack(spacing: LayoutMetrics.spacingSmall) {
                         TextField(
-                            String(localized: "top_up_phone_placeholder"),
+                            AppLocalization.string("top_up_phone_placeholder"),
                             text: $viewModel.phoneNumber
                         )
                         .font(.title3)
@@ -141,7 +141,7 @@ private struct TopUpContentView<VM: TopUpViewModelProtocol>: View {
 
                 // Top-Up Amount Section
                 VStack(alignment: .leading, spacing: LayoutMetrics.spacingMedium) {
-                    Text(String(localized: "top_up_amount_section_title"))
+                    Text(AppLocalization.string("top_up_amount_section_title"))
                         .font(.headline)
                         .fontWeight(.bold)
                         .foregroundStyle(.primary)
@@ -159,7 +159,7 @@ private struct TopUpContentView<VM: TopUpViewModelProtocol>: View {
                 // Operator Packages Section (Displayed when operator is detected)
                 if viewModel.isPackagesSectionVisible {
                     VStack(alignment: .leading, spacing: LayoutMetrics.spacingMedium) {
-                        Text(String(localized: "top_up_packages_section_title"))
+                        Text(AppLocalization.string("top_up_packages_section_title"))
                             .font(.headline)
                             .fontWeight(.bold)
                             .foregroundStyle(.primary)
@@ -207,12 +207,12 @@ private struct TopUpContentView<VM: TopUpViewModelProtocol>: View {
         .scrollDismissesKeyboard(.interactively)
         .frame(maxWidth: .infinity)
         .background(AppColors.screenBackground)
-        .navigationTitle(String(localized: "top_up_title"))
+        .navigationTitle(AppLocalization.string("top_up_title"))
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItemGroup(placement: .keyboard) {
                 Spacer()
-                Button(String(localized: "action_done")) {
+                Button(AppLocalization.string("action_done")) {
                     isPhoneFocused = false
                 }
             }

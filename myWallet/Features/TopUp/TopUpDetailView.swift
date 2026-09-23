@@ -72,7 +72,7 @@ private struct TopUpDetailContentView: View {
 
                 // Order Summary Card
                 VStack(spacing: LayoutMetrics.spacingMedium) {
-                    Text(String(localized: "top_up_detail_summary_title"))
+                    Text(AppLocalization.string("top_up_detail_summary_title"))
                         .font(.headline)
                         .fontWeight(.bold)
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -80,12 +80,12 @@ private struct TopUpDetailContentView: View {
                     Divider()
 
                     summaryRow(
-                        title: String(localized: "top_up_detail_recipient"),
+                        title: AppLocalization.string("top_up_detail_recipient"),
                         value: viewModel.params.phone
                     )
 
                     HStack(alignment: .center) {
-                        Text(String(localized: "top_up_detail_operator"))
+                        Text(AppLocalization.string("top_up_detail_operator"))
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                         Spacer()
@@ -98,19 +98,19 @@ private struct TopUpDetailContentView: View {
                     }
 
                     summaryRow(
-                        title: String(localized: "top_up_detail_plan"),
+                        title: AppLocalization.string("top_up_detail_plan"),
                         value: viewModel.params.planTitle
                     )
 
                     summaryRow(
-                        title: String(localized: "top_up_fee"),
-                        value: String(localized: "top_up_free_fee")
+                        title: AppLocalization.string("top_up_fee"),
+                        value: AppLocalization.string("top_up_free_fee")
                     )
 
                     Divider()
 
                     HStack {
-                        Text(String(localized: "top_up_detail_total"))
+                        Text(AppLocalization.string("top_up_detail_total"))
                             .font(.headline)
                             .fontWeight(.bold)
                         Spacer()
@@ -145,7 +145,7 @@ private struct TopUpDetailContentView: View {
                                 .tint(.white)
                         } else {
                             Image(systemName: "creditcard")
-                            Text(String(localized: "btn_simulate_checkout"))
+                            Text(AppLocalization.string("btn_simulate_checkout"))
                                 .fontWeight(.semibold)
                         }
                     }
@@ -162,13 +162,13 @@ private struct TopUpDetailContentView: View {
         }
         .frame(maxWidth: .infinity)
         .background(AppColors.screenBackground)
-        .navigationTitle(String(localized: "top_up_detail_title"))
+        .navigationTitle(AppLocalization.string("top_up_detail_title"))
         .navigationBarTitleDisplayMode(.inline)
         .alert(
-            String(localized: "top_up_detail_title"),
+            AppLocalization.string("top_up_detail_title"),
             isPresented: $showErrorAlert,
             actions: {
-                Button(String(localized: "action_done")) {
+                Button(AppLocalization.string("action_done")) {
                     showErrorAlert = false
                 }
             },

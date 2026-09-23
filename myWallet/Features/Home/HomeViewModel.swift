@@ -21,7 +21,7 @@ public final class HomeViewModel: HomeViewModelProtocol {
     
     public var displayBalance: String {
         if isBalanceHidden {
-            return String(localized: "home_balance_hidden_mask")
+            return AppLocalization.string("home_balance_hidden_mask")
         } else {
             return formattedBalance
         }

@@ -108,7 +108,7 @@ private struct TransactionDetailContentView<VM: TransactionDetailViewModelProtoc
                     VStack(spacing: LayoutMetrics.spacingMedium) {
                         // Reference Number with Copy Action
                         HStack {
-                            Text(String(localized: "detail_reference"))
+                            Text(AppLocalization.string("detail_reference"))
                                 .font(.subheadline)
                                 .foregroundStyle(.secondary)
                             Spacer()
@@ -126,7 +126,7 @@ private struct TransactionDetailContentView<VM: TransactionDetailViewModelProtoc
                                         .foregroundStyle(viewModel.isCopied ? Color.green : Color.accentColor)
                                 }
                                 .buttonStyle(.plain)
-                                .accessibilityLabel(String(localized: "action_copy"))
+                                .accessibilityLabel(AppLocalization.string("action_copy"))
                             }
                         }
 
@@ -134,7 +134,7 @@ private struct TransactionDetailContentView<VM: TransactionDetailViewModelProtoc
 
                         // Date & Time (International Gregorian Calendar)
                         detailRow(
-                            title: String(localized: "detail_date"),
+                            title: AppLocalization.string("detail_date"),
                             value: AppDateFormatter.formatDateTime(transaction.date)
                         )
 
@@ -143,13 +143,13 @@ private struct TransactionDetailContentView<VM: TransactionDetailViewModelProtoc
                         // Recipient / Mobile Number
                         if let mobile = transaction.mobileNumber {
                             detailRow(
-                                title: String(localized: "detail_recipient"),
+                                title: AppLocalization.string("detail_recipient"),
                                 value: mobile
                             )
                             Divider()
                         } else if !transaction.counterparty.isEmpty {
                             detailRow(
-                                title: String(localized: "detail_recipient"),
+                                title: AppLocalization.string("detail_recipient"),
                                 value: transaction.recipientName ?? transaction.counterparty
                             )
                             Divider()
@@ -158,7 +158,7 @@ private struct TransactionDetailContentView<VM: TransactionDetailViewModelProtoc
                         // Operator (if Top-Up)
                         if transaction.parsedType == .topUp, transaction.operatorType != .unknown {
                             HStack {
-                                Text(String(localized: "filter_operator"))
+                                Text(AppLocalization.string("filter_operator"))
                                     .font(.subheadline)
                                     .foregroundStyle(.secondary)
                                 Spacer()
@@ -170,7 +170,7 @@ private struct TransactionDetailContentView<VM: TransactionDetailViewModelProtoc
                         // Plan / Package Description
                         if let plan = transaction.planDetails {
                             detailRow(
-                                title: String(localized: "detail_plan"),
+                                title: AppLocalization.string("detail_plan"),
                                 value: plan
                             )
                             Divider()
@@ -178,7 +178,7 @@ private struct TransactionDetailContentView<VM: TransactionDetailViewModelProtoc
 
                         // Transaction Fee
                         detailRow(
-                            title: String(localized: "detail_fee"),
+                            title: AppLocalization.string("detail_fee"),
                             value: "0 \(Constants.Currency.symbol)"
                         )
 
@@ -186,7 +186,7 @@ private struct TransactionDetailContentView<VM: TransactionDetailViewModelProtoc
                         if let remark = transaction.remark, !remark.isEmpty {
                             Divider()
                             detailRow(
-                                title: String(localized: "detail_remark"),
+                                title: AppLocalization.string("detail_remark"),
                                 value: remark
                             )
                         }
@@ -201,7 +201,7 @@ private struct TransactionDetailContentView<VM: TransactionDetailViewModelProtoc
 
                     // Copied Toast Notification
                     if viewModel.isCopied {
-                        Text(String(localized: "copied_to_clipboard"))
+                        Text(AppLocalization.string("copied_to_clipboard"))
                             .font(.caption)
                             .foregroundStyle(.secondary)
                             .transition(.opacity)
@@ -214,7 +214,7 @@ private struct TransactionDetailContentView<VM: TransactionDetailViewModelProtoc
                         }) {
                             HStack(spacing: LayoutMetrics.spacingSmall) {
                                 Image(systemName: "arrow.clockwise")
-                                Text(String(localized: "action_recharge"))
+                                Text(AppLocalization.string("action_recharge"))
                             }
                             .font(.headline)
                             .frame(maxWidth: .infinity)
@@ -224,8 +224,8 @@ private struct TransactionDetailContentView<VM: TransactionDetailViewModelProtoc
                             .clipShape(RoundedRectangle(cornerRadius: LayoutMetrics.cornerRadiusMedium))
                         }
                         .padding(.top, LayoutMetrics.spacingSmall)
-                        .accessibilityLabel(String(localized: "action_recharge"))
-                        .accessibilityHint(String(localized: "action_recharge_hint"))
+                        .accessibilityLabel(AppLocalization.string("action_recharge"))
+                        .accessibilityHint(AppLocalization.string("action_recharge_hint"))
                         .accessibilityAddTraits(.isButton)
                     }
 
@@ -241,7 +241,7 @@ private struct TransactionDetailContentView<VM: TransactionDetailViewModelProtoc
                             .foregroundStyle(.secondary)
 
                         Button(action: { router?.pop() }) {
-                            Text(String(localized: "action_done"))
+                            Text(AppLocalization.string("action_done"))
                                 .font(.headline)
                                 .padding(.horizontal, 24)
                                 .padding(.vertical, 10)
@@ -258,7 +258,7 @@ private struct TransactionDetailContentView<VM: TransactionDetailViewModelProtoc
             .frame(maxWidth: .infinity)
         }
         .background(AppColors.screenBackground)
-        .navigationTitle(String(localized: "transaction_detail_title"))
+        .navigationTitle(AppLocalization.string("transaction_detail_title"))
         .navigationBarTitleDisplayMode(.inline)
     }
 

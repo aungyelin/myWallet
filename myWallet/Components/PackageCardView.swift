@@ -33,7 +33,7 @@ struct PackageCardView: View {
                     Spacer()
 
                     if package.isPopular {
-                        Text(String(localized: "top_up_badge_hot"))
+                        Text(AppLocalization.string("top_up_badge_hot"))
                             .font(.system(size: 10, weight: .bold))
                             .foregroundStyle(.white)
                             .padding(.horizontal, 6)

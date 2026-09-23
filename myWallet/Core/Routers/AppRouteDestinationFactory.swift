@@ -26,6 +26,8 @@ public enum AppRouteDestinationFactory {
             TransactionDetailView(referenceNumber: referenceNumber)
         case .themeSettings:
             ThemeSettingsView()
+        case .languageSettings:
+            LanguageSettingsView()
         }
     }
     

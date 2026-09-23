@@ -25,11 +25,11 @@ struct TopUpSuccessView: View {
                     .opacity(isCheckmarkAnimated ? 1.0 : 0.0)
                 
                 VStack(spacing: LayoutMetrics.spacingMicro) {
-                    Text(String(localized: "top_up_success_title"))
+                    Text(AppLocalization.string("top_up_success_title"))
                         .font(.title2)
                         .fontWeight(.bold)
                     
-                    Text(String(localized: "top_up_success_message"))
+                    Text(AppLocalization.string("top_up_success_message"))
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
@@ -37,24 +37,24 @@ struct TopUpSuccessView: View {
                 // Transaction Receipt Card
                 VStack(spacing: LayoutMetrics.spacingMedium) {
                     receiptRow(
-                        title: String(localized: "top_up_receipt_reference"),
+                        title: AppLocalization.string("top_up_receipt_reference"),
                         value: params.referenceNumber
                     )
                     
                     receiptRow(
-                        title: String(localized: "top_up_receipt_time"),
+                        title: AppLocalization.string("top_up_receipt_time"),
                         value: AppDateFormatter.formatReceiptDate(params.timestamp)
                     )
                     
                     Divider()
                     
                     receiptRow(
-                        title: String(localized: "top_up_detail_recipient"),
+                        title: AppLocalization.string("top_up_detail_recipient"),
                         value: params.phone
                     )
                     
                     HStack(alignment: .center) {
-                        Text(String(localized: "top_up_detail_operator"))
+                        Text(AppLocalization.string("top_up_detail_operator"))
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                         Spacer()
@@ -67,20 +67,20 @@ struct TopUpSuccessView: View {
                     }
                     
                     receiptRow(
-                        title: String(localized: "top_up_detail_plan"),
+                        title: AppLocalization.string("top_up_detail_plan"),
                         value: params.planTitle
                     )
                     
                     Divider()
                     
                     receiptRow(
-                        title: String(localized: "top_up_detail_amount"),
+                        title: AppLocalization.string("top_up_detail_amount"),
                         value: CurrencyFormatter.format(params.amount)
                     )
                     
                     receiptRow(
-                        title: String(localized: "top_up_fee"),
-                        value: String(localized: "top_up_free_fee")
+                        title: AppLocalization.string("top_up_fee"),
+                        value: AppLocalization.string("top_up_free_fee")
                     )
                 }
                 .padding(LayoutMetrics.spacingLarge)
@@ -101,7 +101,7 @@ struct TopUpSuccessView: View {
                         router?.popToRoot()
                     }
                 }) {
-                    Label(String(localized: "action_back_to_home"), systemImage: "house.fill")
+                    Label(AppLocalization.string("action_back_to_home"), systemImage: "house.fill")
                         .frame(maxWidth: .infinity)
                         .frame(height: LayoutMetrics.primaryButtonHeight)
                         .fontWeight(.semibold)

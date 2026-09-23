@@ -45,13 +45,13 @@ struct ThemeSettingsView: View {
                     .accessibilityAddTraits(theme == themeManager.currentTheme ? [.isButton, .isSelected] : .isButton)
                 }
             } footer: {
-                Text(String(localized: "profile_theme_description"))
+                Text(AppLocalization.string("profile_theme_description"))
                     .font(.footnote)
                     .foregroundStyle(.secondary)
                     .padding(.top, LayoutMetrics.spacingMicro)
             }
         }
-        .navigationTitle(String(localized: "profile_theme_setting"))
+        .navigationTitle(AppLocalization.string("profile_theme_setting"))
         .navigationBarTitleDisplayMode(.inline)
         .scrollContentBackground(.hidden)
         .background(AppColors.screenBackground)

@@ -52,7 +52,7 @@ public final class TransactionDetailViewModel: TransactionDetailViewModelProtoco
             self.transaction = try transactionRepository.getTransaction(by: referenceNumber)
             isLoading = false
             if transaction == nil {
-                errorMessage = String(localized: "transaction_not_found")
+                errorMessage = AppLocalization.string("transaction_not_found")
             }
         } catch {
             logger.error("Failed to load transaction \(self.referenceNumber, privacy: .public): \(error.localizedDescription, privacy: .public)")
@@ -81,7 +81,7 @@ public final class TransactionDetailViewModel: TransactionDetailViewModelProtoco
         let checkoutParams = TopUpCheckoutParams(
             phone: phone,
             operatorType: transaction.operatorType,
-            planTitle: transaction.planDetails ?? "\(CurrencyFormatter.format(transaction.amount)) \(String(localized: "top_up_title"))",
+            planTitle: transaction.planDetails ?? "\(CurrencyFormatter.format(transaction.amount)) \(AppLocalization.string("top_up_title"))",
             amount: transaction.amount,
             fee: transaction.fee
         )

@@ -13,7 +13,7 @@ struct BalanceCardView: View {
     let isHidden: Bool
     let onToggleVisibility: () -> Void
     
-    private let hiddenMask = String(localized: "home_balance_hidden_mask")
+    private let hiddenMask = AppLocalization.string("home_balance_hidden_mask")
     
     var body: some View {
         VStack(alignment: .leading, spacing: LayoutMetrics.spacingMedium) {
@@ -40,10 +40,10 @@ struct BalanceCardView: View {
                         .contentShape(Rectangle())
                 }
                 .accessibilityLabel(
-                    isHidden ? String(localized: "home_balance_show") : String(localized: "home_balance_hide")
+                    isHidden ? AppLocalization.string("home_balance_show") : AppLocalization.string("home_balance_hide")
                 )
                 .accessibilityHint(
-                    isHidden ? String(localized: "home_balance_show") : String(localized: "home_balance_hide")
+                    isHidden ? AppLocalization.string("home_balance_show") : AppLocalization.string("home_balance_hide")
                 )
             }
             .frame(height: 28)
@@ -75,7 +75,7 @@ struct BalanceCardView: View {
         .frame(maxWidth: LayoutMetrics.maxContentWidth)
         .accessibilityElement(children: .contain)
         .accessibilityLabel(
-            String(format: String(localized: "home_balance_accessibility_format"), isHidden ? hiddenMask : formattedBalance)
+            String(format: AppLocalization.string("home_balance_accessibility_format"), isHidden ? hiddenMask : formattedBalance)
         )
     }
 }
@@ -83,8 +83,8 @@ struct BalanceCardView: View {
 #Preview("BalanceCardView - Visible") {
     VStack {
         BalanceCardView(
-            title: String(localized: "home_balance_title"),
-            formattedBalance: "1,250,000 \(String(localized: "home_balance_currency"))",
+            title: AppLocalization.string("home_balance_title"),
+            formattedBalance: "1,250,000 \(AppLocalization.string("home_balance_currency"))",
             isHidden: false,
             onToggleVisibility: {}
         )
@@ -98,8 +98,8 @@ struct BalanceCardView: View {
 #Preview("BalanceCardView - Hidden") {
     VStack {
         BalanceCardView(
-            title: String(localized: "home_balance_title"),
-            formattedBalance: "1,250,000 \(String(localized: "home_balance_currency"))",
+            title: AppLocalization.string("home_balance_title"),
+            formattedBalance: "1,250,000 \(AppLocalization.string("home_balance_currency"))",
             isHidden: true,
             onToggleVisibility: {}
         )

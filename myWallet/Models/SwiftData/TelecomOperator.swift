@@ -19,15 +19,15 @@ public enum TelecomOperator: String, CaseIterable, Codable, Sendable {
     public var displayName: String {
         switch self {
         case .mpt:
-            return String(localized: "operator_mpt", defaultValue: "MPT")
+            return AppLocalization.string("operator_mpt", defaultValue: "MPT")
         case .atom:
-            return String(localized: "operator_atom", defaultValue: "ATOM")
+            return AppLocalization.string("operator_atom", defaultValue: "ATOM")
         case .u9:
-            return String(localized: "operator_u9", defaultValue: "U9")
+            return AppLocalization.string("operator_u9", defaultValue: "U9")
         case .mytel:
-            return String(localized: "operator_mytel", defaultValue: "Mytel")
+            return AppLocalization.string("operator_mytel", defaultValue: "Mytel")
         case .unknown:
-            return String(localized: "operator_unknown", defaultValue: "Unknown Operator")
+            return AppLocalization.string("operator_unknown", defaultValue: "Unknown Operator")
         }
     }
 

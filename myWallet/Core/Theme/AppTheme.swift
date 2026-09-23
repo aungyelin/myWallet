@@ -20,11 +20,11 @@ public enum AppTheme: String, CaseIterable, Identifiable, Sendable {
     public var displayName: String {
         switch self {
         case .system:
-            return String(localized: "profile_theme_system")
+            return AppLocalization.string("profile_theme_system")
         case .light:
-            return String(localized: "profile_theme_light")
+            return AppLocalization.string("profile_theme_light")
         case .dark:
-            return String(localized: "profile_theme_dark")
+            return AppLocalization.string("profile_theme_dark")
         }
     }
     

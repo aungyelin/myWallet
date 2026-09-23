@@ -19,7 +19,7 @@ public enum CurrencyFormatter {
     
     public static func format(
         _ amount: Double,
-        currency: String = String(localized: "home_balance_currency", defaultValue: "Ks")
+        currency: String = AppLocalization.string("home_balance_currency", defaultValue: "Ks")
     ) -> String {
         let formattedNumber = formatAmountOnly(amount)
         return "\(formattedNumber) \(currency)"

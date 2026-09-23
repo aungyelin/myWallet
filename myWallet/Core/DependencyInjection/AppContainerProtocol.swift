@@ -22,6 +22,8 @@ public protocol AppContainerProtocol: AnyObject {
     var transactionRepository: TransactionRepositoryProtocol { get }
     
     var themeManager: ThemeManagerProtocol { get }
+
+    var languageManager: LanguageManagerProtocol { get }
     
     var appRouter: any AppRouterProtocol { get }
     

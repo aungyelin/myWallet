@@ -31,11 +31,11 @@ struct HomeView: View {
         ScrollView {
             VStack(spacing: LayoutMetrics.spacingLarge) {
                 // Custom Screen Header (replacing built-in navigation title)
-                ScreenHeaderView(title: String(localized: "home_screen_title"))
+                ScreenHeaderView(title: AppLocalization.string("home_screen_title"))
                 
                 // Account Balance Card with visibility toggle (* * * * * * mask)
                 BalanceCardView(
-                    title: String(localized: "home_balance_title"),
+                    title: AppLocalization.string("home_balance_title"),
                     formattedBalance: viewModel.formattedBalance,
                     isHidden: viewModel.isBalanceHidden,
                     onToggleVisibility: {
@@ -47,7 +47,7 @@ struct HomeView: View {
                 VStack(alignment: .leading, spacing: LayoutMetrics.spacingMedium) {
                     LazyVGrid(columns: gridColumns, spacing: LayoutMetrics.spacingLarge) {
                         QuickActionButton(
-                            title: String(localized: "btn_top_up"),
+                            title: AppLocalization.string("btn_top_up"),
                             iconName: "iphone.gen3",
                             action: {
                                 viewModel.navigateToTopUp(router: router)
@@ -55,7 +55,7 @@ struct HomeView: View {
                         )
                         
                         QuickActionButton(
-                            title: String(localized: "btn_history"),
+                            title: AppLocalization.string("btn_history"),
                             iconName: "clock.arrow.circlepath",
                             action: {
                                 viewModel.navigateToHistory(router: router)

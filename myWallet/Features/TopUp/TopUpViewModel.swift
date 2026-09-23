@@ -146,7 +146,7 @@ public final class TopUpViewModel: TopUpViewModelProtocol {
         let params = TopUpCheckoutParams(
             phone: phoneNumber,
             operatorType: detectedOperator,
-            planTitle: "\(CurrencyFormatter.format(amount)) \(String(localized: "top_up_title"))",
+            planTitle: "\(CurrencyFormatter.format(amount)) \(AppLocalization.string("top_up_title"))",
             amount: amount,
             fee: 0.0
         )
@@ -211,11 +211,11 @@ public final class TopUpViewModel: TopUpViewModelProtocol {
             : phoneNumber.count == Constants.Telecom.standardMobilePhoneDigits
 
         if phoneNumber.isEmpty || !phoneNumber.hasPrefix(Constants.Telecom.localPrefix) || !hasValidLength {
-            self.validationError = String(localized: "top_up_error_enter_valid_phone")
+            self.validationError = AppLocalization.string("top_up_error_enter_valid_phone")
             return false
         }
         if detectedOperator == .unknown {
-            self.validationError = String(localized: "top_up_error_enter_valid_phone")
+            self.validationError = AppLocalization.string("top_up_error_enter_valid_phone")
             return false
         }
         self.validationError = nil

@@ -72,7 +72,7 @@ private struct TransactionHistoryContentView<VM: TransactionHistoryViewModelProt
                         .foregroundStyle(.secondary)
 
                     TextField(
-                        String(localized: "transaction_history_search_placeholder"),
+                        AppLocalization.string("transaction_history_search_placeholder"),
                         text: $viewModel.searchQuery
                     )
                     .font(.body)
@@ -113,7 +113,7 @@ private struct TransactionHistoryContentView<VM: TransactionHistoryViewModelProt
                             Button(action: {
                                 viewModel.selectOperator(nil)
                             }) {
-                                Text(String(localized: "filter_all"))
+                                Text(AppLocalization.string("filter_all"))
                                     .font(.subheadline)
                                     .fontWeight(isAllSelected ? .semibold : .regular)
                                     .padding(.horizontal, 14)
@@ -178,7 +178,7 @@ private struct TransactionHistoryContentView<VM: TransactionHistoryViewModelProt
                         )
                     }
                     .buttonStyle(.plain)
-                    .accessibilityLabel(String(localized: "filter_title"))
+                    .accessibilityLabel(AppLocalization.string("filter_title"))
                 }
 
                 // Active Filters Chips (Removable)
@@ -195,7 +195,7 @@ private struct TransactionHistoryContentView<VM: TransactionHistoryViewModelProt
                             }
                         }
                         Spacer()
-                        Button(String(localized: "filter_reset")) {
+                        Button(AppLocalization.string("filter_reset")) {
                             viewModel.resetFilters()
                         }
                         .font(.caption)
@@ -262,7 +262,7 @@ private struct TransactionHistoryContentView<VM: TransactionHistoryViewModelProt
         .frame(maxWidth: contentMaxWidth)
         .frame(maxWidth: .infinity)
         .background(AppColors.screenBackground)
-        .navigationTitle(String(localized: "transaction_history_title"))
+        .navigationTitle(AppLocalization.string("transaction_history_title"))
         .navigationBarTitleDisplayMode(.inline)
         .sheet(isPresented: $viewModel.isFilterSheetPresented) {
             TransactionFilterSheetView(viewModel: viewModel)
@@ -295,11 +295,11 @@ private struct TransactionHistoryContentView<VM: TransactionHistoryViewModelProt
                 .font(.system(size: 56))
                 .foregroundStyle(.secondary)
 
-            Text(viewModel.hasActiveFilters || !viewModel.searchQuery.isEmpty ? String(localized: "history_no_search_results_title") : String(localized: "history_empty_title"))
+            Text(viewModel.hasActiveFilters || !viewModel.searchQuery.isEmpty ? AppLocalization.string("history_no_search_results_title") : AppLocalization.string("history_empty_title"))
                 .font(.headline)
                 .foregroundStyle(.primary)
 
-            Text(viewModel.hasActiveFilters || !viewModel.searchQuery.isEmpty ? String(localized: "history_no_search_results_description") : String(localized: "history_empty_description"))
+            Text(viewModel.hasActiveFilters || !viewModel.searchQuery.isEmpty ? AppLocalization.string("history_no_search_results_description") : AppLocalization.string("history_empty_description"))
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
@@ -309,7 +309,7 @@ private struct TransactionHistoryContentView<VM: TransactionHistoryViewModelProt
                 Button(action: {
                     viewModel.resetFilters()
                 }) {
-                    Text(String(localized: "filter_reset"))
+                    Text(AppLocalization.string("filter_reset"))
                         .font(.subheadline)
                         .fontWeight(.semibold)
                         .padding(.horizontal, 20)
@@ -324,7 +324,7 @@ private struct TransactionHistoryContentView<VM: TransactionHistoryViewModelProt
                 Button(action: {
                     router?.navigate(to: .topUp)
                 }) {
-                    Text(String(localized: "btn_top_up"))
+                    Text(AppLocalization.string("btn_top_up"))
                         .font(.subheadline)
                         .fontWeight(.semibold)
                         .padding(.horizontal, 24)

@@ -16,11 +16,11 @@ public enum TransactionStatus: String, Codable, CaseIterable, Sendable {
     public var localizedTitle: String {
         switch self {
         case .success:
-            return String(localized: "status_success", defaultValue: "Success")
+            return AppLocalization.string("status_success", defaultValue: "Success")
         case .pending:
-            return String(localized: "status_pending", defaultValue: "Pending")
+            return AppLocalization.string("status_pending", defaultValue: "Pending")
         case .failed:
-            return String(localized: "status_failed", defaultValue: "Failed")
+            return AppLocalization.string("status_failed", defaultValue: "Failed")
         }
     }
 
