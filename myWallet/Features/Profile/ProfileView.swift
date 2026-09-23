@@ -7,68 +7,134 @@
 
 import SwiftUI
 
-/// Profile screen displaying user information and application settings.
 struct ProfileView: View {
     @Environment(\.appRouter) private var router
     @Environment(\.themeManager) private var themeManager
+    @Environment(\.languageManager) private var languageManager
     
     var body: some View {
-        List {
-            Section {
-                HStack(spacing: LayoutMetrics.spacingMedium) {
-                    Image(systemName: "person.crop.circle.fill")
-                        .font(.system(size: LayoutMetrics.avatarSize))
-                        .foregroundStyle(Color.accentColor)
-                    
-                    VStack(alignment: .leading, spacing: LayoutMetrics.spacingMicro) {
-                        Text(String(localized: "nav_profile"))
-                            .font(.title3)
-                            .fontWeight(.bold)
-                        
-                        Text(String(localized: "app_name"))
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
+        let currentLang = languageManager.currentLanguage
+        ScrollView {
+            VStack(spacing: LayoutMetrics.spacingLarge) {
+                // Custom Screen Header (matching Home screen header)
+                ScreenHeaderView(title: AppLocalization.string("profile_screen_title", language: currentLang))
+                
+                // Profile Card (same size, elevation, and padding as BalanceCardView)
+                ProfileCardView(
+                    title: AppLocalization.string("nav_profile", language: currentLang),
+                    subtitle: AppLocalization.string("app_name", language: currentLang)
+                )
+                
+                // Preferences Section
+                VStack(alignment: .leading, spacing: LayoutMetrics.spacingSmall) {
+                    Text(AppLocalization.string("profile_section_preferences", language: currentLang))
+                        .font(.subheadline)
+                        .fontWeight(.medium)
+                        .foregroundStyle(.secondary)
+                        .padding(.horizontal, LayoutMetrics.headerHorizontalPadding)
+                    VStack(spacing: 0) {
+                        preferenceRow(
+                            leadingView: {
+                                Image(systemName: themeManager.currentTheme.iconName)
+                                    .font(.system(size: LayoutMetrics.iconSizeMedium))
+                                    .foregroundStyle(Color.accentColor)
+                                    .frame(width: LayoutMetrics.iconSizeLarge, height: LayoutMetrics.iconSizeLarge)
+                            },
+                            title: AppLocalization.string("profile_theme_setting", language: currentLang),
+                            detail: themeManager.currentTheme.displayName,
+                            accessibilityLabel: "\(AppLocalization.string("profile_theme_setting", language: currentLang)), \(themeManager.currentTheme.displayName)",
+                            accessibilityHint: AppLocalization.string("profile_theme_description", language: currentLang)
+                        ) {
+                            router?.navigate(to: .themeSettings)
+                        }
+
+                        Divider()
+                            .padding(.leading, LayoutMetrics.balanceCardPadding + LayoutMetrics.iconSizeLarge + LayoutMetrics.spacingMedium)
+
+                        preferenceRow(
+                            leadingView: {
+                                localeBadge(for: currentLang)
+                            },
+                            title: AppLocalization.string("profile_language_setting", language: currentLang),
+                            detail: currentLang.displayName(in: currentLang),
+                            accessibilityLabel: AppLocalization.string("profile_language_setting", language: currentLang)
+                        ) {
+                            router?.navigate(to: .languageSettings)
+                        }
                     }
-                    
-                    Spacer()
-                }
-                .padding(.vertical, LayoutMetrics.spacingSmall)
-            }
-            
-            Section(header: Text(String(localized: "profile_section_preferences"))) {
-                Button(action: {
-                    router?.navigate(to: .themeSettings)
-                }) {
-                    HStack(spacing: LayoutMetrics.spacingMedium) {
-                        Image(systemName: themeManager.currentTheme.iconName)
-                            .font(.system(size: LayoutMetrics.iconSizeMedium))
-                            .foregroundStyle(Color.accentColor)
-                            .frame(width: LayoutMetrics.iconSizeLarge)
-                        
-                        Text(String(localized: "profile_theme_setting"))
-                            .font(.body)
-                            .foregroundStyle(.primary)
-                        
-                        Spacer()
-                        
-                        Text(themeManager.currentTheme.displayName)
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                        
-                        Image(systemName: "chevron.right")
-                            .font(.caption)
-                            .foregroundStyle(.tertiary)
+                    .background {
+                        RoundedRectangle(cornerRadius: LayoutMetrics.balanceCardCornerRadius, style: .continuous)
+                            .fill(AppColors.cardSurface)
+                            .shadow(color: Color.black.opacity(0.04), radius: 8, x: 0, y: 4)
+                            .overlay {
+                                RoundedRectangle(cornerRadius: LayoutMetrics.balanceCardCornerRadius, style: .continuous)
+                                    .strokeBorder(AppColors.cardBorder, lineWidth: 1)
+                            }
                     }
-                    .contentShape(Rectangle())
+                    .clipShape(RoundedRectangle(cornerRadius: LayoutMetrics.balanceCardCornerRadius, style: .continuous))
+                    .padding(.horizontal, LayoutMetrics.screenHorizontalPadding)
                 }
-                .buttonStyle(.plain)
-                .accessibilityElement(children: .combine)
-                .accessibilityLabel("\(String(localized: "profile_theme_setting")), \(themeManager.currentTheme.displayName)")
-                .accessibilityHint(String(localized: "profile_theme_description"))
-                .accessibilityAddTraits(.isButton)
+                .frame(maxWidth: LayoutMetrics.maxContentWidth)
+                
+                Spacer(minLength: LayoutMetrics.spacingExtraLarge)
             }
+            .frame(maxWidth: .infinity)
         }
-        .navigationTitle(String(localized: "nav_profile"))
+        .toolbar(.hidden, for: .navigationBar)
+        .background(AppColors.screenBackground)
+    }
+
+    @ViewBuilder
+    private func localeBadge(for language: AppLanguage) -> some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: LayoutMetrics.cornerRadiusSmall, style: .continuous)
+                .fill(Color.accentColor.opacity(0.12))
+                .overlay(
+                    RoundedRectangle(cornerRadius: LayoutMetrics.cornerRadiusSmall, style: .continuous)
+                        .strokeBorder(Color.accentColor.opacity(0.3), lineWidth: 1)
+                )
+
+            Text(language.scriptSymbol)
+                .font(.system(size: 13, weight: .bold, design: .rounded))
+                .foregroundStyle(Color.accentColor)
+        }
+        .frame(width: LayoutMetrics.iconSizeLarge, height: LayoutMetrics.iconSizeLarge)
+    }
+
+    private func preferenceRow<LeadingContent: View>(
+        @ViewBuilder leadingView: () -> LeadingContent,
+        title: String,
+        detail: String,
+        accessibilityLabel: String,
+        accessibilityHint: String? = nil,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button(action: action) {
+            HStack(spacing: LayoutMetrics.spacingMedium) {
+                leadingView()
+
+                Text(title)
+                    .font(.body)
+                    .foregroundStyle(.primary)
+
+                Spacer()
+
+                Text(detail)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+
+                Image(systemName: "chevron.right")
+                    .font(.caption)
+                    .foregroundStyle(.tertiary)
+            }
+            .padding(LayoutMetrics.balanceCardPadding)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(accessibilityLabel)
+        .accessibilityHint(accessibilityHint ?? "")
+        .accessibilityAddTraits(.isButton)
     }
 }
 
@@ -76,4 +142,12 @@ struct ProfileView: View {
     NavigationStack {
         ProfileView()
     }
+    .environment(\.themeManager, ThemeManager())
+}
+
+#Preview("ProfileView - iPad", traits: .fixedLayout(width: 820, height: 1180)) {
+    NavigationStack {
+        ProfileView()
+    }
+    .environment(\.themeManager, ThemeManager())
 }

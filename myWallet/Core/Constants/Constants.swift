@@ -16,11 +16,14 @@ public enum Constants {
     }
 
     public enum Telecom {
-        /// Minimum typed digits required to trigger automatic telecom detection.
-        public static let minPrefixDetectionDigits: Int = 3
+        /// Four digits are required because the catalog contains exact four-digit prefixes.
+        public static let minPrefixDetectionDigits: Int = 4
+        public static let mptMinimumPhoneDigits: Int = 8
+        public static let mptMaximumPhoneDigits: Int = 11
+        public static let standardMobilePhoneDigits: Int = 11
         public static let mpt = TelecomOperator.mpt.rawValue
         public static let atom = TelecomOperator.atom.rawValue
-        public static let ooredoo = TelecomOperator.ooredoo.rawValue
+        public static let u9 = TelecomOperator.u9.rawValue
         public static let mytel = TelecomOperator.mytel.rawValue
         public static let unknown = TelecomOperator.unknown.rawValue
         public static let myanmarCountryCode = "+959"

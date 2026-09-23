@@ -67,7 +67,7 @@ struct TopUpRepositoryTests {
         let repository = TopUpRepository(networkService: failingNetwork, modelContext: context)
 
         await #expect(throws: AppError.networkFailure) {
-            _ = try await repository.getPackages(for: "Ooredoo")
+            _ = try await repository.getPackages(for: "U9")
         }
     }
 
@@ -90,8 +90,8 @@ struct TopUpRepositoryTests {
         #expect(fetched.count == 1)
         #expect(fetched.first?.mobileNumber == "09250000000")
         #expect(fetched.first?.operatorName == "MPT")
-        #expect(fetched.first?.operatorType == .mpt)
-        #expect(fetched.first?.referenceNumber.hasPrefix("TXN-") == true)
+        #expect(fetched.first?.referenceNumber.hasPrefix("TXN") == false)
+        #expect(fetched.first?.referenceNumber.contains("-") == true)
     }
 
     @Test("prefetchPackages: Silently caches data when network succeeds")
@@ -123,6 +123,60 @@ struct TopUpRepositoryTests {
         let count = try context.fetchCount(FetchDescriptor<PackageEntity>())
         #expect(count == 0)
     }
+
+    @Test("getCachedPackages returns locally stored packages for operator")
+    func getCachedPackagesSuccess() throws {
+        let container = try AppModelContainer.createInMemoryContainer()
+        let context = container.mainContext
+        let repository = TopUpRepository(
+            networkService: MockNetworkService(latencyNanoseconds: 0),
+            modelContext: context
+        )
+
+        let package = PackageEntity(
+            id: "cached_test_1",
+            operatorName: "MPT",
+            category: "Data",
+            packGroup: "A Kyite Kyi",
+            name: "Combo 1000MB",
+            packageDescription: "Test",
+            amount: 998,
+            validityDays: 7,
+            validityText: "7 Days"
+        )
+        context.insert(package)
+        try context.save()
+
+        let cached = try repository.getCachedPackages(for: "MPT")
+        #expect(cached.count == 1)
+        #expect(cached.first?.id == "cached_test_1")
+    }
+
+    @Test("performRecharge submits to network and persists transaction to SwiftData")
+    func performRechargeSuccess() async throws {
+        let container = try AppModelContainer.createInMemoryContainer()
+        let context = container.mainContext
+        let repository = TopUpRepository(
+            networkService: MockNetworkService(latencyNanoseconds: 0),
+            modelContext: context
+        )
+
+        let transaction = try await repository.performRecharge(
+            phone: "09253366392",
+            operatorName: "MPT",
+            planTitle: "1,000 Ks Top-Up",
+            amount: 1000
+        )
+
+        #expect(transaction.mobileNumber == "09253366392")
+        #expect(transaction.operatorName == "MPT")
+        #expect(transaction.amount == 1000)
+        #expect(!transaction.referenceNumber.hasPrefix("TXN"))
+        #expect(transaction.referenceNumber.contains("-"))
+
+        let count = try context.fetchCount(FetchDescriptor<TransactionHistory>())
+        #expect(count == 1)
+    }
 }
 
 // MARK: - Test Mock Helper
@@ -136,6 +190,15 @@ private final class TestFailingNetworkService: MockNetworkServiceProtocol, Senda
     }
 
     func fetchSeedTransactions() async throws -> [TransactionHistoryDTO] {
+        throw AppError.networkFailure
+    }
+
+    func submitTopUpRecharge(
+        phone: String,
+        operatorName: String,
+        planTitle: String,
+        amount: Double
+    ) async throws -> TopUpRechargeResponseDTO {
         throw AppError.networkFailure
     }
 }

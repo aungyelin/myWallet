@@ -11,6 +11,7 @@ public struct PackageDTO: Codable, Sendable, Equatable {
     public let id: String
     public let operatorName: String
     public let category: String
+    public let packGroup: String
     public let name: String
     public let packageDescription: String
     public let amount: Double
@@ -23,6 +24,7 @@ public struct PackageDTO: Codable, Sendable, Equatable {
         id: String,
         operatorName: String,
         category: String,
+        packGroup: String = "",
         name: String,
         packageDescription: String,
         amount: Double,
@@ -34,6 +36,7 @@ public struct PackageDTO: Codable, Sendable, Equatable {
         self.id = id
         self.operatorName = operatorName
         self.category = category
+        self.packGroup = packGroup
         self.name = name
         self.packageDescription = packageDescription
         self.amount = amount
@@ -48,6 +51,7 @@ public struct PackageDTO: Codable, Sendable, Equatable {
             id: id,
             operatorName: operatorName,
             category: category,
+            packGroup: packGroup,
             name: name,
             packageDescription: packageDescription,
             amount: amount,

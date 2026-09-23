@@ -50,14 +50,60 @@ struct TelecomRepositoryTests {
         let atom = try await repository.detectOperator(for: "09770000000")
         #expect(atom?.operatorName == "ATOM")
 
-        let ooredoo = try await repository.detectOperator(for: "09970000000")
-        #expect(ooredoo?.operatorName == "Ooredoo")
+        let atom979 = try await repository.detectOperator(for: "09790000000")
+        #expect(atom979?.operatorName == "ATOM")
+
+        let u9 = try await repository.detectOperator(for: "09970000000")
+        #expect(u9?.operatorName == "U9")
+        #expect(u9?.operatorType == .u9)
 
         let mytel = try await repository.detectOperator(for: "09690000000")
         #expect(mytel?.operatorName == "Mytel")
     }
 
-    @Test("Short Input: Returns nil when input has fewer than 3 digits")
+    @Test("Operator Detection: Covers the documented Myanmar operator ranges")
+    func documentedOperatorRanges() async throws {
+        let container = try AppModelContainer.createInMemoryContainer()
+        let repository = TelecomRepository(
+            networkService: MockNetworkService(latencyNanoseconds: 0),
+            modelContext: container.mainContext
+        )
+
+        let expectedOperators: [(String, TelecomOperator)] = [
+            ("09200000000", .mpt), ("09210000000", .mpt), ("09260000000", .mpt),
+            ("09400000000", .mpt), ("09410000000", .mpt), ("09420000000", .mpt),
+            ("09500000000", .mpt), ("09510000000", .mpt),
+            ("09880000000", .mpt),
+            ("09740000000", .atom), ("09750000000", .atom), ("09760000000", .atom),
+            ("09770000000", .atom), ("09780000000", .atom), ("09790000000", .atom),
+            ("09940000000", .u9), ("09950000000", .u9), ("09960000000", .u9),
+            ("09970000000", .u9), ("09980000000", .u9),
+            ("09660000000", .mytel), ("09670000000", .mytel),
+            ("09680000000", .mytel), ("09690000000", .mytel)
+        ]
+
+        for (number, expectedOperator) in expectedOperators {
+            let detected = try await repository.detectOperator(for: number)
+            #expect(detected?.operatorType == expectedOperator, Comment(rawValue: number))
+        }
+    }
+
+    @Test("Prefix catalog contains only four-digit prefixes")
+    func prefixCatalogUsesFourDigits() async throws {
+        let container = try AppModelContainer.createInMemoryContainer()
+        let repository = TelecomRepository(
+            networkService: MockNetworkService(latencyNanoseconds: 0),
+            modelContext: container.mainContext
+        )
+
+        let prefixes = try await repository.getPrefixes()
+        #expect(!prefixes.isEmpty)
+        #expect(prefixes.allSatisfy { $0.prefix.count == 4 })
+        let removedLegacyPrefix = try await repository.detectOperator(for: "09900000000")
+        #expect(removedLegacyPrefix == nil)
+    }
+
+    @Test("Short Input: Returns nil when input has fewer than 4 digits")
     func shortInputReturnsNil() async throws {
         let container = try AppModelContainer.createInMemoryContainer()
         let repository = TelecomRepository(
@@ -87,7 +133,7 @@ struct TelecomRepositoryTests {
         let context = container.mainContext
 
         let cached = TelecomPrefixEntity(
-            prefix: "097",
+            prefix: "0979",
             operatorName: "ATOM",
             brandDisplayName: "ATOM",
             brandLogoName: "atom_logo"
@@ -151,7 +197,7 @@ struct TelecomRepositoryTests {
         let context = container.mainContext
 
         let prefix = TelecomPrefixEntity(
-            prefix: "094",
+            prefix: "0940",
             operatorName: "MPT",
             brandDisplayName: "MPT",
             brandLogoName: "mpt_logo"
@@ -163,7 +209,7 @@ struct TelecomRepositoryTests {
         let networkThatMustNotBeCalled = FailingTelecomNetworkService()
         let repository = TelecomRepository(networkService: networkThatMustNotBeCalled, modelContext: context)
 
-        let detected = try await repository.detectOperator(for: "09450123456")
+        let detected = try await repository.detectOperator(for: "09401234567")
         #expect(detected?.operatorName == "MPT")
         #expect(detected?.operatorType == .mpt)
     }
@@ -180,6 +226,15 @@ private final class FailingTelecomNetworkService: MockNetworkServiceProtocol, Se
     }
 
     func fetchSeedTransactions() async throws -> [TransactionHistoryDTO] {
+        throw AppError.networkFailure
+    }
+
+    func submitTopUpRecharge(
+        phone: String,
+        operatorName: String,
+        planTitle: String,
+        amount: Double
+    ) async throws -> TopUpRechargeResponseDTO {
         throw AppError.networkFailure
     }
 }

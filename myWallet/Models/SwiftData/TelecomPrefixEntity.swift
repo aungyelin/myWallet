@@ -15,7 +15,7 @@ public final class TelecomPrefixEntity {
     public var id: UUID
     /// Dialing prefix (e.g. "092", "097", "0989").
     @Attribute(.unique) public var prefix: String
-    /// Canonical telecom operator code/identifier (e.g. "MPT", "ATOM", "Ooredoo", "Mytel").
+    /// Canonical telecom operator code/identifier (e.g. "MPT", "ATOM", "U9", "Mytel").
     public var operatorName: String
     /// Localized or branded display name of the telecom operator.
     public var brandDisplayName: String

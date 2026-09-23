@@ -7,56 +7,81 @@
 
 import SwiftUI
 
-/// Placeholder screen for Home dashboard.
+@MainActor
 struct HomeView: View {
+    @State private var viewModel: HomeViewModel
     @Environment(\.appRouter) private var router
     
+    init(viewModel: HomeViewModel) {
+        _viewModel = State(wrappedValue: viewModel)
+    }
+    
+    init() {
+        _viewModel = State(wrappedValue: HomeViewModel())
+    }
+    
+    private var gridColumns: [GridItem] {
+        Array(
+            repeating: GridItem(.flexible(), spacing: LayoutMetrics.spacingStandard),
+            count: LayoutMetrics.actionGridColumnsCount
+        )
+    }
+    
     var body: some View {
-        VStack(spacing: LayoutMetrics.spacingLarge) {
-            Spacer()
-            
-            Image(systemName: "wallet.pass.fill")
-                .font(.system(size: LayoutMetrics.avatarSize))
-                .foregroundStyle(.tint)
-            
-            Text(String(localized: "nav_home"))
-                .font(.title2)
-                .fontWeight(.bold)
-            
-            Text(String(localized: "placeholder_empty_screen"))
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-            
-            VStack(spacing: LayoutMetrics.spacingMedium) {
-                Button(action: {
-                    router?.navigate(to: .topUp)
-                }) {
-                    Label(String(localized: "btn_top_up"), systemImage: "iphone")
-                        .frame(maxWidth: .infinity)
-                        .frame(height: LayoutMetrics.primaryButtonHeight)
-                }
-                .buttonStyle(.borderedProminent)
+        ScrollView {
+            VStack(spacing: LayoutMetrics.spacingLarge) {
+                // Custom Screen Header (replacing built-in navigation title)
+                ScreenHeaderView(title: AppLocalization.string("home_screen_title"))
                 
-                Button(action: {
-                    router?.navigate(to: .transactionHistory)
-                }) {
-                    Label(String(localized: "btn_history"), systemImage: "clock.arrow.circlepath")
-                        .frame(maxWidth: .infinity)
-                        .frame(height: LayoutMetrics.primaryButtonHeight)
+                // Account Balance Card with visibility toggle (* * * * * * mask)
+                BalanceCardView(
+                    title: AppLocalization.string("home_balance_title"),
+                    formattedBalance: viewModel.formattedBalance,
+                    isHidden: viewModel.isBalanceHidden,
+                    onToggleVisibility: {
+                        viewModel.toggleBalanceVisibility()
+                    }
+                )
+                
+                // Quick-Action Mini Circular Buttons Grid
+                VStack(alignment: .leading, spacing: LayoutMetrics.spacingMedium) {
+                    LazyVGrid(columns: gridColumns, spacing: LayoutMetrics.spacingLarge) {
+                        QuickActionButton(
+                            title: AppLocalization.string("btn_top_up"),
+                            iconName: "iphone.gen3",
+                            action: {
+                                viewModel.navigateToTopUp(router: router)
+                            }
+                        )
+                        
+                        QuickActionButton(
+                            title: AppLocalization.string("btn_history"),
+                            iconName: "clock.arrow.circlepath",
+                            action: {
+                                viewModel.navigateToHistory(router: router)
+                            }
+                        )
+                    }
+                    .padding(.horizontal, LayoutMetrics.screenHorizontalPadding)
                 }
-                .buttonStyle(.bordered)
+                .frame(maxWidth: LayoutMetrics.maxContentWidth)
+                
+                Spacer(minLength: LayoutMetrics.spacingExtraLarge)
             }
-            .padding(.horizontal, LayoutMetrics.spacingLarge)
-            .frame(maxWidth: LayoutMetrics.maxContentWidth)
-            
-            Spacer()
+            .frame(maxWidth: .infinity)
         }
-        .padding(LayoutMetrics.spacingStandard)
-        .navigationTitle(String(localized: "nav_home"))
+        .toolbar(.hidden, for: .navigationBar)
+        .background(AppColors.screenBackground)
     }
 }
 
 #Preview("HomeView - iPhone") {
+    NavigationStack {
+        HomeView()
+    }
+}
+
+#Preview("HomeView - iPad", traits: .fixedLayout(width: 820, height: 1180)) {
     NavigationStack {
         HomeView()
     }

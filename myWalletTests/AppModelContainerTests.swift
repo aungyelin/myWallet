@@ -103,7 +103,7 @@ struct AppModelContainerTests {
         let context = container.mainContext
 
         let prefix = TelecomPrefixEntity(
-            prefix: "092",
+            prefix: "0925",
             operatorName: "MPT",
             brandDisplayName: "MPT",
             brandLogoName: "mpt_logo"
@@ -127,7 +127,7 @@ struct AppModelContainerTests {
         let fetchedPackages = try context.fetch(FetchDescriptor<PackageEntity>())
 
         #expect(fetchedPrefixes.count == 1)
-        #expect(fetchedPrefixes.first?.prefix == "092")
+        #expect(fetchedPrefixes.first?.prefix == "0925")
         #expect(fetchedPackages.count == 1)
         #expect(fetchedPackages.first?.id == "pkg_test_1")
     }

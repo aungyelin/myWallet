@@ -17,20 +17,35 @@ struct MockNetworkServiceTests {
     func fetchTelecomPrefixesSuccess() async throws {
         let prefixes = try await service.fetchTelecomPrefixes()
         #expect(!prefixes.isEmpty)
-        #expect(prefixes.contains(where: { $0.operatorName == "MPT" && $0.prefix == "092" }))
-        #expect(prefixes.contains(where: { $0.operatorName == "ATOM" && $0.prefix == "097" }))
-        #expect(prefixes.contains(where: { $0.operatorName == "Ooredoo" && $0.prefix == "099" }))
-        #expect(prefixes.contains(where: { $0.operatorName == "Mytel" && $0.prefix == "096" }))
+        #expect(prefixes.contains(where: { $0.operatorName == "MPT" && $0.prefix == "0925" }))
+        #expect(prefixes.contains(where: { $0.operatorName == "ATOM" && $0.prefix == "0974" }))
+        #expect(prefixes.contains(where: { $0.operatorName == "U9" && $0.prefix == "0994" }))
+        #expect(prefixes.contains(where: { $0.operatorName == "Mytel" && $0.prefix == "0966" }))
     }
 
-    @Test("Fetch packages successfully returns denominations and data packages")
+    @Test("Fetch packages successfully returns operator packages")
     func fetchPackagesSuccess() async throws {
         let packages = try await service.fetchPackages()
         #expect(!packages.isEmpty)
-        #expect(packages.contains(where: { $0.category == "denomination" }))
-        #expect(packages.contains(where: { $0.category == "dataPackage" }))
+        #expect(packages.contains(where: { $0.category == "Data" }))
         #expect(packages.contains(where: { $0.operatorName == "MPT" }))
         #expect(packages.contains(where: { $0.operatorName == "ATOM" }))
+        #expect(packages.contains(where: { !$0.packGroup.isEmpty }))
+    }
+
+    @Test("submitTopUpRecharge successfully returns server response with reference number")
+    func submitTopUpRechargeSuccess() async throws {
+        let response = try await service.submitTopUpRecharge(
+            phone: "09253366392",
+            operatorName: "MPT",
+            planTitle: "1,000 Ks Top-Up",
+            amount: 1000
+        )
+        #expect(response.status == Constants.Transaction.statusSuccess)
+        #expect(!response.referenceNumber.hasPrefix("TXN"))
+        #expect(response.referenceNumber.contains("-"))
+        #expect(response.mobileNumber == "09253366392")
+        #expect(response.amount == 1000)
     }
 
     @Test("Fetch seed transactions parses multiple transaction types")

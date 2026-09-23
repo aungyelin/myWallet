@@ -14,10 +14,11 @@ public enum AppRoute: Hashable, Sendable {
     case transactionHistory
     case transactionDetail(referenceNumber: String)
     case themeSettings
+    case languageSettings
     
     public var defaultTab: AppTab {
         switch self {
-        case .themeSettings:
+        case .themeSettings, .languageSettings:
             return .profile
         case .topUp, .topUpDetail, .topUpSuccess, .transactionHistory, .transactionDetail:
             return .home

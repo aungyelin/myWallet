@@ -7,63 +7,189 @@
 
 import SwiftUI
 
-/// Placeholder screen for Mobile Top-Up checkout and confirmation.
 struct TopUpDetailView: View {
     let params: TopUpCheckoutParams
-    
-    @Environment(\.appRouter) private var router
-    
+    @Environment(\.appContainer) private var appContainer
+    private let customViewModel: (any TopUpDetailViewModelProtocol)?
+
+    public init(params: TopUpCheckoutParams, viewModel: (any TopUpDetailViewModelProtocol)? = nil) {
+        self.params = params
+        self.customViewModel = viewModel
+    }
+
     var body: some View {
-        VStack(spacing: LayoutMetrics.spacingLarge) {
-            Spacer()
-            
-            Image(systemName: "checkmark.shield")
-                .font(.system(size: LayoutMetrics.avatarSize))
-                .foregroundStyle(.tint)
-            
-            Text(String(localized: "top_up_detail_title"))
-                .font(.title2)
-                .fontWeight(.bold)
-            
-            VStack(spacing: LayoutMetrics.spacingSmall) {
-                Text(params.phone)
-                    .font(.headline)
-                Text(params.operatorType.displayName)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                Text(params.planTitle)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                Text("\(Int(params.amount)) Ks")
-                    .font(.title3)
-                    .fontWeight(.semibold)
-                    .foregroundStyle(.tint)
-            }
-            .padding(LayoutMetrics.spacingMedium)
-            
-            Button(action: {
-                let receiptParams = TopUpReceiptParams(
-                    referenceNumber: ReferenceNumberGenerator.generate(),
-                    phone: params.phone,
-                    operatorType: params.operatorType,
-                    planTitle: params.planTitle,
-                    amount: params.amount,
-                    fee: params.fee
+        if let customViewModel {
+            TopUpDetailContentView(viewModel: customViewModel)
+        } else if let appContainer {
+            TopUpDetailContainerLoadedView(params: params, container: appContainer)
+        } else {
+            ProgressView()
+        }
+    }
+}
+
+private struct TopUpDetailContainerLoadedView: View {
+    @State private var viewModel: TopUpDetailViewModel
+
+    init(params: TopUpCheckoutParams, container: any AppContainerProtocol) {
+        _viewModel = State(wrappedValue: TopUpDetailViewModel(
+            params: params,
+            topUpRepository: container.topUpRepository
+        ))
+    }
+
+    var body: some View {
+        TopUpDetailContentView(viewModel: viewModel)
+    }
+}
+
+private struct TopUpDetailContentView: View {
+    let viewModel: any TopUpDetailViewModelProtocol
+    @Environment(\.appRouter) private var router
+    @State private var showErrorAlert: Bool = false
+
+    var body: some View {
+        ScrollView {
+            VStack(spacing: LayoutMetrics.spacingLarge) {
+                
+                // Operator Brand Card
+                VStack(spacing: LayoutMetrics.spacingSmall) {
+                    TelecomBadgeView(
+                        operatorType: viewModel.params.operatorType,
+                        style: .cardBadge
+                    )
+
+                    Text(viewModel.params.planTitle)
+                        .font(.title3)
+                        .fontWeight(.bold)
+                        .multilineTextAlignment(.center)
+
+                    Text(CurrencyFormatter.format(viewModel.params.amount))
+                        .font(.system(size: 32, weight: .bold))
+                        .foregroundStyle(.tint)
+                }
+                .padding(.vertical, LayoutMetrics.spacingMedium)
+
+                // Order Summary Card
+                VStack(spacing: LayoutMetrics.spacingMedium) {
+                    Text(AppLocalization.string("top_up_detail_summary_title"))
+                        .font(.headline)
+                        .fontWeight(.bold)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+
+                    Divider()
+
+                    summaryRow(
+                        title: AppLocalization.string("top_up_detail_recipient"),
+                        value: viewModel.params.phone
+                    )
+
+                    HStack(alignment: .center) {
+                        Text(AppLocalization.string("top_up_detail_operator"))
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                        Spacer()
+                        HStack(spacing: LayoutMetrics.spacingSmall) {
+                            TelecomLogoView(operatorType: viewModel.params.operatorType, size: 20)
+                            Text(viewModel.params.operatorType.displayName)
+                                .font(.subheadline)
+                                .fontWeight(.medium)
+                        }
+                    }
+
+                    summaryRow(
+                        title: AppLocalization.string("top_up_detail_plan"),
+                        value: viewModel.params.planTitle
+                    )
+
+                    summaryRow(
+                        title: AppLocalization.string("top_up_fee"),
+                        value: AppLocalization.string("top_up_free_fee")
+                    )
+
+                    Divider()
+
+                    HStack {
+                        Text(AppLocalization.string("top_up_detail_total"))
+                            .font(.headline)
+                            .fontWeight(.bold)
+                        Spacer()
+                        Text(CurrencyFormatter.format(viewModel.params.amount + viewModel.params.fee))
+                            .font(.title3)
+                            .fontWeight(.bold)
+                            .foregroundStyle(.tint)
+                    }
+                }
+                .padding(LayoutMetrics.spacingLarge)
+                .background(AppColors.cardSurface)
+                .clipShape(RoundedRectangle(cornerRadius: LayoutMetrics.balanceCardCornerRadius))
+                .overlay(
+                    RoundedRectangle(cornerRadius: LayoutMetrics.balanceCardCornerRadius)
+                        .stroke(AppColors.cardBorder, lineWidth: 1)
                 )
-                router?.navigate(to: .topUpSuccess(receiptParams))
-            }) {
-                Label(String(localized: "btn_simulate_checkout"), systemImage: "creditcard")
+
+                Spacer(minLength: LayoutMetrics.spacingMedium)
+
+                // Primary Payment Confirmation Button
+                Button(action: {
+                    Task {
+                        await viewModel.confirmPayment(router: router)
+                        if viewModel.errorMessage != nil {
+                            showErrorAlert = true
+                        }
+                    }
+                }) {
+                    HStack(spacing: LayoutMetrics.spacingSmall) {
+                        if viewModel.isProcessing {
+                            ProgressView()
+                                .tint(.white)
+                        } else {
+                            Image(systemName: "creditcard")
+                            Text(AppLocalization.string("btn_simulate_checkout"))
+                                .fontWeight(.semibold)
+                        }
+                    }
                     .frame(maxWidth: .infinity)
                     .frame(height: LayoutMetrics.primaryButtonHeight)
+                }
+                .buttonStyle(.borderedProminent)
+                .disabled(viewModel.isProcessing)
+                .padding(.horizontal, LayoutMetrics.spacingSmall)
             }
-            .buttonStyle(.borderedProminent)
-            .padding(.horizontal, LayoutMetrics.spacingLarge)
+            .padding(.horizontal, LayoutMetrics.screenHorizontalPadding)
+            .padding(.vertical, LayoutMetrics.spacingStandard)
             .frame(maxWidth: LayoutMetrics.maxContentWidth)
-            
-            Spacer()
         }
-        .padding(LayoutMetrics.spacingStandard)
-        .navigationTitle(String(localized: "top_up_detail_title"))
+        .frame(maxWidth: .infinity)
+        .background(AppColors.screenBackground)
+        .navigationTitle(AppLocalization.string("top_up_detail_title"))
+        .navigationBarTitleDisplayMode(.inline)
+        .alert(
+            AppLocalization.string("top_up_detail_title"),
+            isPresented: $showErrorAlert,
+            actions: {
+                Button(AppLocalization.string("action_done")) {
+                    showErrorAlert = false
+                }
+            },
+            message: {
+                Text(viewModel.errorMessage ?? "")
+            }
+        )
+    }
+
+    @ViewBuilder
+    private func summaryRow(title: String, value: String) -> some View {
+        HStack(alignment: .top) {
+            Text(title)
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+            Spacer()
+            Text(value)
+                .font(.subheadline)
+                .fontWeight(.medium)
+                .multilineTextAlignment(.trailing)
+        }
     }
 }
 
@@ -71,10 +197,10 @@ struct TopUpDetailView: View {
     NavigationStack {
         TopUpDetailView(
             params: TopUpCheckoutParams(
-                phone: "09250000000",
+                phone: "09253366392",
                 operatorType: .mpt,
-                planTitle: "10,000 Ks Top-Up",
-                amount: 10000
+                planTitle: "Combo 1000MB (YouTube; TikTok; Telegram) (7 Days)",
+                amount: 998
             )
         )
     }

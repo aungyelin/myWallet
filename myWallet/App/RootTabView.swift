@@ -11,6 +11,7 @@ import SwiftUI
 struct RootTabView: View {
     @Bindable var router: AppRouter
     @Environment(\.themeManager) private var themeManager
+    @Environment(\.languageManager) private var languageManager
     
     @MainActor
     init(router: AppRouter) {
@@ -29,7 +30,7 @@ struct RootTabView: View {
                     .withAppNavigationDestinations()
             }
             .tabItem {
-                Label(String(localized: "nav_home"), systemImage: "house.fill")
+                Label(AppLocalization.string("nav_home"), systemImage: "house.fill")
             }
             .tag(AppTab.home)
             
@@ -38,7 +39,7 @@ struct RootTabView: View {
                     .withAppNavigationDestinations()
             }
             .tabItem {
-                Label(String(localized: "nav_profile"), systemImage: "person.fill")
+                Label(AppLocalization.string("nav_profile"), systemImage: "person.fill")
             }
             .tag(AppTab.profile)
         }
@@ -49,6 +50,7 @@ struct RootTabView: View {
             AppRouteDestinationFactory.cover(for: cover)
         }
         .preferredColorScheme(themeManager.currentTheme.colorScheme)
+        .environment(\.locale, languageManager.currentLanguage.locale)
         .environment(\.appRouter, router)
         .environment(router)
     }

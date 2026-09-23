@@ -20,6 +20,7 @@ public final class AppContainer: AppContainerProtocol {
     public let topUpRepository: TopUpRepositoryProtocol
     public let transactionRepository: TransactionRepositoryProtocol
     public let themeManager: ThemeManagerProtocol
+    public let languageManager: LanguageManagerProtocol
     public let router: AppRouter
     public var appRouter: any AppRouterProtocol { router }
     
@@ -30,6 +31,7 @@ public final class AppContainer: AppContainerProtocol {
         topUpRepository: TopUpRepositoryProtocol? = nil,
         transactionRepository: TransactionRepositoryProtocol? = nil,
         themeManager: ThemeManagerProtocol? = nil,
+        languageManager: LanguageManagerProtocol? = nil,
         router: AppRouter? = nil
     ) {
         self.modelContainer = modelContainer
@@ -47,6 +49,7 @@ public final class AppContainer: AppContainerProtocol {
             modelContext: modelContainer.mainContext
         )
         self.themeManager = themeManager ?? ThemeManager.shared
+        self.languageManager = languageManager ?? LanguageManager.shared
         self.router = router ?? AppRouter()
     }
 

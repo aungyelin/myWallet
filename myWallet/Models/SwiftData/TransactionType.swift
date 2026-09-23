@@ -15,18 +15,18 @@ public enum TransactionType: String, Codable, CaseIterable, Sendable {
     public var localizedTitle: String {
         switch self {
         case .topUp:
-            return String(localized: "transaction_type_top_up", defaultValue: "Mobile Top-Up")
+            return AppLocalization.string("transaction_type_top_up", defaultValue: "Mobile Top-Up")
         case .transfer:
-            return String(localized: "transaction_type_transfer", defaultValue: "Transfer")
+            return AppLocalization.string("transaction_type_transfer", defaultValue: "Transfer")
         case .payment:
-            return String(localized: "transaction_type_payment", defaultValue: "Payment")
+            return AppLocalization.string("transaction_type_payment", defaultValue: "Payment")
         }
     }
 
     public var systemIconName: String {
         switch self {
         case .topUp:
-            return "iphone.badge.play"
+            return "iphone.gen3"
         case .transfer:
             return "arrow.left.arrow.right"
         case .payment:
