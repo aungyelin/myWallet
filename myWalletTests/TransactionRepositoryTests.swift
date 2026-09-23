@@ -66,11 +66,11 @@ struct TransactionRepositoryTests {
         try repository.saveTransaction(mptTxn)
         try repository.saveTransaction(atomTxn)
         
-        let mptResults = try repository.getTransactions(operatorFilter: "MPT")
+        let mptResults = try repository.getTransactions(operatorFilter: .mpt)
         #expect(mptResults.count == 1)
         #expect(mptResults.first?.operatorName == "MPT")
         
-        let allResults = try repository.getTransactions(operatorFilter: "All")
+        let allResults = try repository.getTransactions(operatorFilter: nil)
         #expect(allResults.count == 2)
     }
 
@@ -152,5 +152,81 @@ struct TransactionRepositoryTests {
         // Search with no match
         let noMatch = try repository.getTransactions(query: "NonExistentQuery")
         #expect(noMatch.isEmpty)
+    }
+
+    @Test("Filters transactions by date range boundaries")
+    func filterByDateRange() throws {
+        let container = try AppModelContainer.createInMemoryContainer()
+        let repository = TransactionRepository(modelContext: container.mainContext)
+        let calendar = Calendar(identifier: .gregorian)
+        let now = Date()
+
+        let threeDaysAgo = calendar.date(byAdding: .day, value: -3, to: now)!
+        let tenDaysAgo = calendar.date(byAdding: .day, value: -10, to: now)!
+        let fortyDaysAgo = calendar.date(byAdding: .day, value: -40, to: now)!
+
+        let txnRecent = TransactionHistory.createTopUp(
+            mobileNumber: "09250000001",
+            operatorName: "MPT",
+            planDetails: "1,000 Ks",
+            amount: 1000,
+            date: threeDaysAgo
+        )
+        let txnMedium = TransactionHistory.createTopUp(
+            mobileNumber: "09250000002",
+            operatorName: "MPT",
+            planDetails: "2,000 Ks",
+            amount: 2000,
+            date: tenDaysAgo
+        )
+        let txnOld = TransactionHistory.createTopUp(
+            mobileNumber: "09250000003",
+            operatorName: "MPT",
+            planDetails: "3,000 Ks",
+            amount: 3000,
+            date: fortyDaysAgo
+        )
+
+        try repository.saveTransaction(txnRecent)
+        try repository.saveTransaction(txnMedium)
+        try repository.saveTransaction(txnOld)
+
+        // Last 7 days filter: should only include txnRecent
+        let sevenDaysAgo = calendar.date(byAdding: .day, value: -7, to: now)!
+        let last7DaysResults = try repository.getTransactions(startDate: sevenDaysAgo, endDate: now)
+        #expect(last7DaysResults.count == 1)
+        #expect(last7DaysResults.first?.referenceNumber == txnRecent.referenceNumber)
+
+        // Last 30 days filter: should include txnRecent and txnMedium
+        let thirtyDaysAgo = calendar.date(byAdding: .day, value: -30, to: now)!
+        let last30DaysResults = try repository.getTransactions(startDate: thirtyDaysAgo, endDate: now)
+        #expect(last30DaysResults.count == 2)
+
+        // All time
+        let allResults = try repository.getTransactions()
+        #expect(allResults.count == 3)
+    }
+
+    @Test("Fetches single transaction by reference number")
+    func getTransactionByReferenceNumber() throws {
+        let container = try AppModelContainer.createInMemoryContainer()
+        let repository = TransactionRepository(modelContext: container.mainContext)
+
+        let txn = TransactionHistory.createTopUp(
+            mobileNumber: "09250000001",
+            operatorName: "MPT",
+            planDetails: "1,000 Ks",
+            amount: 1000,
+            referenceNumber: "20260923-112233"
+        )
+        try repository.saveTransaction(txn)
+
+        let found = try repository.getTransaction(by: "20260923-112233")
+        #expect(found != nil)
+        #expect(found?.referenceNumber == "20260923-112233")
+        #expect(found?.mobileNumber == "09250000001")
+
+        let notFound = try repository.getTransaction(by: "NON-EXISTENT")
+        #expect(notFound == nil)
     }
 }

@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+@MainActor
 struct TopUpMainView<VM: TopUpViewModelProtocol>: View {
     @Environment(\.appContainer) private var appContainer
     private let customViewModel: VM?
@@ -27,11 +28,13 @@ struct TopUpMainView<VM: TopUpViewModelProtocol>: View {
 }
 
 extension TopUpMainView where VM == TopUpViewModel {
+    @MainActor
     init() {
         self.customViewModel = nil
     }
 }
 
+@MainActor
 private struct TopUpContainerLoadedView: View {
     @State private var viewModel: TopUpViewModel
 
@@ -47,6 +50,7 @@ private struct TopUpContainerLoadedView: View {
     }
 }
 
+@MainActor
 private struct TopUpContentView<VM: TopUpViewModelProtocol>: View {
     @Bindable var viewModel: VM
     @Environment(\.appRouter) private var router

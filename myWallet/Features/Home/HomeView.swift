@@ -7,9 +7,18 @@
 
 import SwiftUI
 
+@MainActor
 struct HomeView: View {
-    @State private var viewModel = HomeViewModel()
+    @State private var viewModel: HomeViewModel
     @Environment(\.appRouter) private var router
+    
+    init(viewModel: HomeViewModel) {
+        _viewModel = State(wrappedValue: viewModel)
+    }
+    
+    init() {
+        _viewModel = State(wrappedValue: HomeViewModel())
+    }
     
     private var gridColumns: [GridItem] {
         Array(

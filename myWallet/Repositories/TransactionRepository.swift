@@ -24,14 +24,23 @@ public final class TransactionRepository: TransactionRepositoryProtocol {
     }
 
     public func getAllTransactions() throws -> [TransactionHistory] {
-        try getTransactions(query: nil, operatorFilter: nil, typeFilter: nil, statusFilter: nil)
+        try getTransactions(
+            query: nil,
+            operatorFilter: nil,
+            typeFilter: nil,
+            statusFilter: nil,
+            startDate: nil,
+            endDate: nil
+        )
     }
 
     public func getTransactions(
         query: String?,
-        operatorFilter: String?,
+        operatorFilter: TelecomOperator?,
         typeFilter: TransactionType?,
-        statusFilter: TransactionStatus?
+        statusFilter: TransactionStatus?,
+        startDate: Date? = nil,
+        endDate: Date? = nil
     ) throws -> [TransactionHistory] {
         let descriptor = FetchDescriptor<TransactionHistory>(
             sortBy: [SortDescriptor(\.date, order: .reverse)]
@@ -40,29 +49,36 @@ public final class TransactionRepository: TransactionRepositoryProtocol {
         let allTransactions = try modelContext.fetch(descriptor)
         
         return allTransactions.filter { item in
-            // 1. Operator Filter
-            if let op = operatorFilter?.trimmingCharacters(in: .whitespacesAndNewlines),
-               !op.isEmpty, op.lowercased() != "all" {
-                guard let itemOp = item.operatorName, itemOp.caseInsensitiveCompare(op) == .orderedSame else {
+            // 1. Date Range Boundaries
+            if let startDate, item.date < startDate {
+                return false
+            }
+            if let endDate, item.date > endDate {
+                return false
+            }
+
+            // 2. Operator Filter
+            if let op = operatorFilter {
+                guard item.operatorType == op else {
                     return false
                 }
             }
 
-            // 2. Transaction Type Filter
+            // 3. Transaction Type Filter
             if let type = typeFilter {
                 guard item.parsedType == type else {
                     return false
                 }
             }
 
-            // 3. Transaction Status Filter
+            // 4. Transaction Status Filter
             if let status = statusFilter {
                 guard item.parsedStatus == status else {
                     return false
                 }
             }
 
-            // 4. Text Search Query
+            // 5. Text Search Query
             if let rawQuery = query?.trimmingCharacters(in: .whitespacesAndNewlines), !rawQuery.isEmpty {
                 let lowerQuery = rawQuery.lowercased()
                 let matchesReference = item.referenceNumber.lowercased().contains(lowerQuery)
@@ -81,6 +97,17 @@ public final class TransactionRepository: TransactionRepositoryProtocol {
 
             return true
         }
+    }
+
+    public func getTransaction(by referenceNumber: String) throws -> TransactionHistory? {
+        let cleanRef = referenceNumber.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !cleanRef.isEmpty else { return nil }
+        
+        let descriptor = FetchDescriptor<TransactionHistory>(
+            predicate: #Predicate { $0.referenceNumber == cleanRef }
+        )
+        let results = try modelContext.fetch(descriptor)
+        return results.first
     }
 
     public func saveTransaction(_ transaction: TransactionHistory) throws {

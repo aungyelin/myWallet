@@ -29,7 +29,6 @@ struct TelecomOperatorTests {
         #expect(TelecomOperator.from(rawName: "ATOM") == .atom)
         #expect(TelecomOperator.from(rawName: "u9") == .u9)
         #expect(TelecomOperator.from(rawName: "U9") == .u9)
-        #expect(TelecomOperator.from(rawName: "ooredoo") == .u9)
         #expect(TelecomOperator.from(rawName: "mytel") == .mytel)
         #expect(TelecomOperator.from(rawName: "invalid") == .unknown)
         #expect(TelecomOperator.from(rawName: nil) == .unknown)

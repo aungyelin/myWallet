@@ -22,6 +22,10 @@ public enum AppDateFormatter {
         internationalReceiptFormatter.string(from: date)
     }
 
+    public static func formatDateTime(_ date: Date) -> String {
+        internationalReceiptFormatter.string(from: date)
+    }
+
     /// Formats a date using international Gregorian calendar with customizable date and time styles.
     public static func format(
         _ date: Date,
