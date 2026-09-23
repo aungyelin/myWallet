@@ -50,16 +50,6 @@ struct MockNetworkServiceTests {
         #expect(response.amount == 1000)
     }
 
-    @Test("Fetch seed transactions parses multiple transaction types")
-    func fetchSeedTransactionsSuccess() async throws {
-        let service = MockNetworkService(latencyNanoseconds: 0)
-        let transactions = try await service.fetchSeedTransactions()
-        #expect(!transactions.isEmpty)
-        #expect(transactions.contains(where: { $0.transactionType == "top_up" }))
-        #expect(transactions.contains(where: { $0.transactionType == "transfer" }))
-        #expect(transactions.contains(where: { $0.transactionType == "payment" }))
-    }
-
     @Test("Throws fileNotFound error for nonexistent resource")
     @MainActor
     func missingResourceThrowsError() async {

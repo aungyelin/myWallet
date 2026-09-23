@@ -29,9 +29,6 @@ public protocol TransactionRepositoryProtocol: AnyObject {
         endDate: Date?
     ) throws -> [TransactionHistory]
 
-    /// Fetches all transactions sorted by date descending without filters.
-    func getAllTransactions() throws -> [TransactionHistory]
-
     /// Fetches a specific transaction by its unique reference number.
     func getTransaction(by referenceNumber: String) throws -> TransactionHistory?
 

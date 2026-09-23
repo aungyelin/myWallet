@@ -52,17 +52,6 @@ public final class AppRouter: AppRouterProtocol {
         paths[tab, default: NavigationPath()]
     }
     
-    public func setPath(_ path: NavigationPath, for tab: AppTab) {
-        paths[tab] = path
-    }
-    
-    public func binding(for tab: AppTab) -> Binding<NavigationPath> {
-        Binding(
-            get: { self.path(for: tab) },
-            set: { self.setPath($0, for: tab) }
-        )
-    }
-    
     public func selectTab(_ tab: AppTab) {
         selectedTab = tab
     }
@@ -77,14 +66,6 @@ public final class AppRouter: AppRouterProtocol {
         var currentPath = paths[destinationTab, default: NavigationPath()]
         currentPath.append(route)
         paths[destinationTab] = currentPath
-    }
-    
-    public func navigate(to route: AppRoute) {
-        navigate(to: route, on: nil, autoSwitchTab: true)
-    }
-    
-    public func navigateInProfile(to route: AppRoute) {
-        navigate(to: route, on: .profile, autoSwitchTab: true)
     }
     
     public func pop(in tab: AppTab? = nil) {
@@ -102,25 +83,9 @@ public final class AppRouter: AppRouterProtocol {
         paths[targetTab] = currentPath
     }
     
-    public func pop() {
-        pop(count: 1, in: nil)
-    }
-    
-    public func popInProfile() {
-        pop(count: 1, in: .profile)
-    }
-    
     public func popToRoot(in tab: AppTab? = nil) {
         let targetTab = tab ?? selectedTab
         paths[targetTab] = NavigationPath()
-    }
-    
-    public func popToRoot() {
-        popToRoot(in: nil)
-    }
-    
-    public func popToRootInProfile() {
-        popToRoot(in: .profile)
     }
     
     public func present(sheet: AppSheet) {

@@ -364,7 +364,7 @@ struct AppRouterTests {
         #expect(container.appRouter.path.count == 1)
     }
     
-    @Test("Dynamic paths dictionary storage syncs with computed path properties and bindings")
+    @Test("Dynamic paths dictionary storage syncs with computed path properties")
     func dynamicMultiTabPathsStorage() {
         var initialPaths: [AppTab: NavigationPath] = [:]
         var initialHomePath = NavigationPath()
@@ -380,11 +380,9 @@ struct AppRouterTests {
         router.path = NavigationPath()
         #expect(router.paths[.home]?.count == 0)
         
-        // Mutating via binding(for:) updates path
-        let profileBinding = router.binding(for: .profile)
         var updatedProfilePath = NavigationPath()
         updatedProfilePath.append(AppRoute.themeSettings)
-        profileBinding.wrappedValue = updatedProfilePath
+        router.profilePath = updatedProfilePath
         
         #expect(router.profilePath.count == 1)
         #expect(router.paths[.profile]?.count == 1)

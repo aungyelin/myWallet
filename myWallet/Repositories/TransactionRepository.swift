@@ -23,17 +23,6 @@ public final class TransactionRepository: TransactionRepositoryProtocol {
         self.modelContext = modelContext
     }
 
-    public func getAllTransactions() throws -> [TransactionHistory] {
-        try getTransactions(
-            query: nil,
-            operatorFilter: nil,
-            typeFilter: nil,
-            statusFilter: nil,
-            startDate: nil,
-            endDate: nil
-        )
-    }
-
     public func getTransactions(
         query: String?,
         operatorFilter: TelecomOperator?,

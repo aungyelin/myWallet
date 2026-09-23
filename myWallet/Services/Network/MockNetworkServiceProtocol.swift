@@ -12,7 +12,6 @@ public protocol MockNetworkServiceProtocol: Sendable {
     
     func fetchTelecomPrefixes() async throws -> [TelecomPrefixDTO]
     func fetchPackages() async throws -> [PackageDTO]
-    func fetchSeedTransactions() async throws -> [TransactionHistoryDTO] // For Testing
     func submitTopUpRecharge(
         phone: String,
         operatorName: String,

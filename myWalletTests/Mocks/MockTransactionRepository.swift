@@ -80,13 +80,6 @@ final class MockTransactionRepository: TransactionRepositoryProtocol {
         return results
     }
 
-    func getAllTransactions() throws -> [TransactionHistory] {
-        if shouldFail {
-            throw AppError.persistenceFailure("Mock persistence error")
-        }
-        return transactionsToReturn
-    }
-
     func getTransaction(by referenceNumber: String) throws -> TransactionHistory? {
         getTransactionByRefCallCount += 1
         if shouldFail {

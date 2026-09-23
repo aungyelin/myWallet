@@ -231,10 +231,6 @@ private final class FailingTelecomNetworkService: MockNetworkServiceProtocol, Se
         throw AppError.networkFailure
     }
 
-    func fetchSeedTransactions() async throws -> [TransactionHistoryDTO] {
-        throw AppError.networkFailure
-    }
-
     func submitTopUpRecharge(
         phone: String,
         operatorName: String,

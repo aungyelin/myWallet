@@ -40,13 +40,6 @@ public final class MockNetworkService: MockNetworkServiceProtocol {
         )
     }
 
-    public func fetchSeedTransactions() async throws -> [TransactionHistoryDTO] {
-        try await loadAndDecode(
-            filename: Constants.ResourceFiles.sampleTransactions,
-            as: [TransactionHistoryDTO].self
-        )
-    }
-
     public func submitTopUpRecharge(
         phone: String,
         operatorName: String,

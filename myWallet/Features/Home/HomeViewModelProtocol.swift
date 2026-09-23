@@ -14,7 +14,6 @@ public protocol HomeViewModelProtocol: AnyObject, Observable {
     var isBalanceHidden: Bool { get }
     var balance: Double { get }
     var formattedBalance: String { get }
-    var displayBalance: String { get }
     
     func toggleBalanceVisibility()
     func navigateToTopUp()

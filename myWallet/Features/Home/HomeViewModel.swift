@@ -20,14 +20,6 @@ public final class HomeViewModel: HomeViewModelProtocol {
         CurrencyFormatter.format(balance)
     }
     
-    public var displayBalance: String {
-        if isBalanceHidden {
-            return AppLocalization.string("home_balance_hidden_mask")
-        } else {
-            return formattedBalance
-        }
-    }
-    
     public init(
         router: any AppRouterProtocol,
         initialBalance: Double = 1_250_000,

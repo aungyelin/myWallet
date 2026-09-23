@@ -20,7 +20,6 @@ struct HomeViewModelTests {
         #expect(viewModel.balance == 1_250_000)
         #expect(viewModel.isBalanceHidden == false)
         #expect(viewModel.formattedBalance.contains("1,250,000"))
-        #expect(viewModel.displayBalance == viewModel.formattedBalance)
     }
     
     @Test("toggleBalanceVisibility alternates between formatted balance and hidden mask")
@@ -28,17 +27,14 @@ struct HomeViewModelTests {
         let viewModel = HomeViewModel(router: MockAppRouter())
         
         #expect(viewModel.isBalanceHidden == false)
-        #expect(viewModel.displayBalance == viewModel.formattedBalance)
         
         // Hide balance
         viewModel.toggleBalanceVisibility()
         #expect(viewModel.isBalanceHidden == true)
-        #expect(viewModel.displayBalance == "* * * * * *")
         
         // Show balance again
         viewModel.toggleBalanceVisibility()
         #expect(viewModel.isBalanceHidden == false)
-        #expect(viewModel.displayBalance == viewModel.formattedBalance)
     }
     
     @Test("HomeViewModel accepts custom initial balance and hidden state")
@@ -47,7 +43,6 @@ struct HomeViewModelTests {
         
         #expect(viewModel.balance == 50_000)
         #expect(viewModel.isBalanceHidden == true)
-        #expect(viewModel.displayBalance == "* * * * * *")
         #expect(viewModel.formattedBalance.contains("50,000"))
     }
     
