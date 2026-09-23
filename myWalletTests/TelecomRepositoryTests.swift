@@ -58,6 +58,34 @@ struct TelecomRepositoryTests {
         #expect(mytel?.operatorName == "Mytel")
     }
 
+    @Test("Operator Detection: Covers the documented Myanmar operator ranges")
+    func documentedOperatorRanges() async throws {
+        let container = try AppModelContainer.createInMemoryContainer()
+        let repository = TelecomRepository(
+            networkService: MockNetworkService(latencyNanoseconds: 0),
+            modelContext: container.mainContext
+        )
+
+        let expectedOperators: [(String, TelecomOperator)] = [
+            ("09200000000", .mpt), ("09210000000", .mpt), ("09260000000", .mpt),
+            ("09400000000", .mpt), ("09410000000", .mpt), ("09420000000", .mpt),
+            ("09500000000", .mpt), ("09510000000", .mpt), ("09790000000", .mpt),
+            ("09880000000", .mpt),
+            ("09740000000", .atom), ("09750000000", .atom), ("09760000000", .atom),
+            ("09770000000", .atom), ("09780000000", .atom),
+            ("09940000000", .u9), ("09950000000", .u9), ("09960000000", .u9),
+            ("09970000000", .u9), ("09980000000", .u9),
+            ("09660000000", .mytel), ("09670000000", .mytel),
+            ("09680000000", .mytel), ("09690000000", .mytel),
+            ("09900000000", .mytel), ("09930000000", .mytel)
+        ]
+
+        for (number, expectedOperator) in expectedOperators {
+            let detected = try await repository.detectOperator(for: number)
+            #expect(detected?.operatorType == expectedOperator, Comment(rawValue: number))
+        }
+    }
+
     @Test("Short Input: Returns nil when input has fewer than 3 digits")
     func shortInputReturnsNil() async throws {
         let container = try AppModelContainer.createInMemoryContainer()

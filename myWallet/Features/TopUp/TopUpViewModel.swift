@@ -201,7 +201,12 @@ public final class TopUpViewModel: TopUpViewModelProtocol {
     }
 
     private func validateInput() -> Bool {
-        if phoneNumber.isEmpty || !phoneNumber.hasPrefix(Constants.Telecom.localPrefix) || phoneNumber.count < 9 {
+        let isMPT = detectedOperator == .mpt
+        let hasValidLength = isMPT
+            ? (Constants.Telecom.mptMinimumPhoneDigits...Constants.Telecom.mptMaximumPhoneDigits).contains(phoneNumber.count)
+            : phoneNumber.count == Constants.Telecom.standardMobilePhoneDigits
+
+        if phoneNumber.isEmpty || !phoneNumber.hasPrefix(Constants.Telecom.localPrefix) || !hasValidLength {
             self.validationError = String(localized: "top_up_error_enter_valid_phone")
             return false
         }

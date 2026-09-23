@@ -18,6 +18,9 @@ public enum Constants {
     public enum Telecom {
         /// Minimum typed digits required to trigger automatic telecom detection.
         public static let minPrefixDetectionDigits: Int = 3
+        public static let mptMinimumPhoneDigits: Int = 8
+        public static let mptMaximumPhoneDigits: Int = 11
+        public static let standardMobilePhoneDigits: Int = 11
         public static let mpt = TelecomOperator.mpt.rawValue
         public static let atom = TelecomOperator.atom.rawValue
         public static let u9 = TelecomOperator.u9.rawValue

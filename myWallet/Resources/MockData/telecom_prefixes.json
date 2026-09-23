@@ -1,5 +1,179 @@
 [
   {
+    "prefix": "0974",
+    "operatorName": "ATOM",
+    "brandDisplayName": "ATOM",
+    "brandLogoName": "atom"
+  },
+  {
+    "prefix": "0975",
+    "operatorName": "ATOM",
+    "brandDisplayName": "ATOM",
+    "brandLogoName": "atom"
+  },
+  {
+    "prefix": "0976",
+    "operatorName": "ATOM",
+    "brandDisplayName": "ATOM",
+    "brandLogoName": "atom"
+  },
+  {
+    "prefix": "0977",
+    "operatorName": "ATOM",
+    "brandDisplayName": "ATOM",
+    "brandLogoName": "atom"
+  },
+  {
+    "prefix": "0978",
+    "operatorName": "ATOM",
+    "brandDisplayName": "ATOM",
+    "brandLogoName": "atom"
+  },
+  {
+    "prefix": "0994",
+    "operatorName": "U9",
+    "brandDisplayName": "U9",
+    "brandLogoName": "u9"
+  },
+  {
+    "prefix": "0995",
+    "operatorName": "U9",
+    "brandDisplayName": "U9",
+    "brandLogoName": "u9"
+  },
+  {
+    "prefix": "0996",
+    "operatorName": "U9",
+    "brandDisplayName": "U9",
+    "brandLogoName": "u9"
+  },
+  {
+    "prefix": "0997",
+    "operatorName": "U9",
+    "brandDisplayName": "U9",
+    "brandLogoName": "u9"
+  },
+  {
+    "prefix": "0998",
+    "operatorName": "U9",
+    "brandDisplayName": "U9",
+    "brandLogoName": "u9"
+  },
+  {
+    "prefix": "0966",
+    "operatorName": "Mytel",
+    "brandDisplayName": "Mytel",
+    "brandLogoName": "mytel"
+  },
+  {
+    "prefix": "0967",
+    "operatorName": "Mytel",
+    "brandDisplayName": "Mytel",
+    "brandLogoName": "mytel"
+  },
+  {
+    "prefix": "0968",
+    "operatorName": "Mytel",
+    "brandDisplayName": "Mytel",
+    "brandLogoName": "mytel"
+  },
+  {
+    "prefix": "0969",
+    "operatorName": "Mytel",
+    "brandDisplayName": "Mytel",
+    "brandLogoName": "mytel"
+  },
+  {
+    "prefix": "0990",
+    "operatorName": "Mytel",
+    "brandDisplayName": "Mytel",
+    "brandLogoName": "mytel"
+  },
+  {
+    "prefix": "0991",
+    "operatorName": "Mytel",
+    "brandDisplayName": "Mytel",
+    "brandLogoName": "mytel"
+  },
+  {
+    "prefix": "0992",
+    "operatorName": "Mytel",
+    "brandDisplayName": "Mytel",
+    "brandLogoName": "mytel"
+  },
+  {
+    "prefix": "0993",
+    "operatorName": "Mytel",
+    "brandDisplayName": "Mytel",
+    "brandLogoName": "mytel"
+  },
+  {
+    "prefix": "0920",
+    "operatorName": "MPT",
+    "brandDisplayName": "MPT",
+    "brandLogoName": "mpt"
+  },
+  {
+    "prefix": "0921",
+    "operatorName": "MPT",
+    "brandDisplayName": "MPT",
+    "brandLogoName": "mpt"
+  },
+  {
+    "prefix": "0925",
+    "operatorName": "MPT",
+    "brandDisplayName": "MPT",
+    "brandLogoName": "mpt"
+  },
+  {
+    "prefix": "0926",
+    "operatorName": "MPT",
+    "brandDisplayName": "MPT",
+    "brandLogoName": "mpt"
+  },
+  {
+    "prefix": "0940",
+    "operatorName": "MPT",
+    "brandDisplayName": "MPT",
+    "brandLogoName": "mpt"
+  },
+  {
+    "prefix": "0941",
+    "operatorName": "MPT",
+    "brandDisplayName": "MPT",
+    "brandLogoName": "mpt"
+  },
+  {
+    "prefix": "0942",
+    "operatorName": "MPT",
+    "brandDisplayName": "MPT",
+    "brandLogoName": "mpt"
+  },
+  {
+    "prefix": "0950",
+    "operatorName": "MPT",
+    "brandDisplayName": "MPT",
+    "brandLogoName": "mpt"
+  },
+  {
+    "prefix": "0951",
+    "operatorName": "MPT",
+    "brandDisplayName": "MPT",
+    "brandLogoName": "mpt"
+  },
+  {
+    "prefix": "0979",
+    "operatorName": "MPT",
+    "brandDisplayName": "MPT",
+    "brandLogoName": "mpt"
+  },
+  {
+    "prefix": "0988",
+    "operatorName": "MPT",
+    "brandDisplayName": "MPT",
+    "brandLogoName": "mpt"
+  },
+  {
     "prefix": "092",
     "operatorName": "MPT",
     "brandDisplayName": "MPT",
