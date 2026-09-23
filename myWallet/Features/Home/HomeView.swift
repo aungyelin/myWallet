@@ -49,6 +49,7 @@ private struct HomeContainerLoadedView: View {
 @MainActor
 private struct HomeContentView<VM: HomeViewModelProtocol>: View {
     @Bindable var viewModel: VM
+    @Environment(\.languageManager) private var languageManager
 
     private var gridColumns: [GridItem] {
         Array(
@@ -58,14 +59,18 @@ private struct HomeContentView<VM: HomeViewModelProtocol>: View {
     }
     
     var body: some View {
+        let language = languageManager.currentLanguage
+
         ScrollView {
             VStack(spacing: LayoutMetrics.spacingLarge) {
                 // Custom Screen Header (replacing built-in navigation title)
-                ScreenHeaderView(title: AppLocalization.string("home_screen_title"))
+                ScreenHeaderView(
+                    title: AppLocalization.string("home_screen_title", language: language)
+                )
                 
                 // Account Balance Card with visibility toggle (* * * * * * mask)
                 BalanceCardView(
-                    title: AppLocalization.string("home_balance_title"),
+                    title: AppLocalization.string("home_balance_title", language: language),
                     formattedBalance: viewModel.formattedBalance,
                     isHidden: viewModel.isBalanceHidden,
                     onToggleVisibility: {
@@ -77,7 +82,7 @@ private struct HomeContentView<VM: HomeViewModelProtocol>: View {
                 VStack(alignment: .leading, spacing: LayoutMetrics.spacingMedium) {
                     LazyVGrid(columns: gridColumns, spacing: LayoutMetrics.spacingLarge) {
                         QuickActionButton(
-                            title: AppLocalization.string("btn_top_up"),
+                            title: AppLocalization.string("btn_top_up", language: language),
                             iconName: "iphone.gen3",
                             action: {
                                 viewModel.navigateToTopUp()
@@ -85,7 +90,7 @@ private struct HomeContentView<VM: HomeViewModelProtocol>: View {
                         )
                         
                         QuickActionButton(
-                            title: AppLocalization.string("btn_history"),
+                            title: AppLocalization.string("btn_history", language: language),
                             iconName: "clock.arrow.circlepath",
                             action: {
                                 viewModel.navigateToHistory()
