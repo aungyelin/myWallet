@@ -52,7 +52,6 @@ struct TelecomOperatorTests {
         for status in TransactionStatus.allCases {
             #expect(!status.localizedTitle.isEmpty)
             #expect(!status.systemIconName.isEmpty)
-            #expect(status.statusColor != nil)
         }
     }
     

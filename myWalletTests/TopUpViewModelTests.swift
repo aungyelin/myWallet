@@ -298,8 +298,7 @@ struct TopUpViewModelTests {
         mockVM.detectedOperator = .atom
         mockVM.isOperatorTagVisible = true
 
-        let view = TopUpMainView(viewModel: mockVM)
-        #expect(view != nil)
+        let _: TopUpMainView<MockTopUpViewModel> = TopUpMainView(viewModel: mockVM)
         #expect(mockVM.phoneNumber == "09778239012")
         #expect(mockVM.detectedOperator == .atom)
     }

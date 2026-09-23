@@ -187,7 +187,6 @@ struct TransactionHistoryViewModelTests {
     @Test("Selecting transaction navigates to transaction detail")
     func selectTransactionNavigates() {
         let sample = makeSampleTransactions()
-        let (viewModel, _) = makeSUT(transactions: sample)
         let router = MockAppRouter()
         let viewModelWithRouter = TransactionHistoryViewModel(
             transactionRepository: MockTransactionRepository(),
@@ -204,8 +203,7 @@ struct TransactionHistoryViewModelTests {
     func genericViewModelDecoupling() {
         let mockVM = MockTransactionHistoryViewModel()
         mockVM.transactions = makeSampleTransactions()
-        let view = TransactionHistoryView(viewModel: mockVM)
-        #expect(view != nil)
+        let _: TransactionHistoryView<MockTransactionHistoryViewModel> = TransactionHistoryView(viewModel: mockVM)
     }
     
 }

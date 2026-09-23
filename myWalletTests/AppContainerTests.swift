@@ -24,13 +24,10 @@ struct AppContainerTests {
             networkService: networkService
         )
         
-        #expect(container.telecomRepository != nil)
-        #expect(container.topUpRepository != nil)
-        #expect(container.transactionRepository != nil)
-        #expect(container.networkService != nil)
-        #expect(container.themeManager != nil)
-        #expect(container.appRouter != nil)
         #expect(container.modelContainer === modelContainer)
+        #expect(container.networkService is MockNetworkService)
+        #expect(container.modelContainer.schema.entities.count == 3)
+        #expect(container.appRouter.selectedTab == .home)
     }
 
     @Test("AppContainer conforms to AppContainerProtocol contract")
@@ -38,23 +35,16 @@ struct AppContainerTests {
         let modelContainer = try AppModelContainer.createInMemoryContainer()
         let container: any AppContainerProtocol = AppContainer(modelContainer: modelContainer)
         
-        #expect(container.modelContainer != nil)
-        #expect(container.telecomRepository != nil)
-        #expect(container.topUpRepository != nil)
-        #expect(container.transactionRepository != nil)
-        #expect(container.themeManager != nil)
-        #expect(container.appRouter != nil)
+        #expect(container.modelContainer.schema.entities.count == 3)
+        #expect(container.appRouter.selectedTab == .home)
     }
 
     @Test("createInMemory factory creates valid preview container with zero latency")
     func inMemoryFactory() throws {
         let container = try AppContainer.createInMemory(latencyNanoseconds: 0)
-        #expect(container.telecomRepository != nil)
-        #expect(container.topUpRepository != nil)
-        #expect(container.transactionRepository != nil)
-        #expect(container.themeManager != nil)
-        #expect(container.appRouter != nil)
-        #expect(container.modelContainer != nil)
+        #expect(container.modelContainer.schema.entities.count == 3)
+        #expect(container.networkService is MockNetworkService)
+        #expect(container.appRouter.selectedTab == .home)
     }
     
 }
