@@ -229,4 +229,5 @@ struct TransactionRepositoryTests {
         let notFound = try repository.getTransaction(by: "NON-EXISTENT")
         #expect(notFound == nil)
     }
+    
 }

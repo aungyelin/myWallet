@@ -41,11 +41,11 @@ public final class MockTopUpViewModel: TopUpViewModelProtocol {
         self.selectedCategory = category
     }
 
-    public func selectTopUpAmount(_ amount: Double, router: (any AppRouterProtocol)?) {
+    public func selectTopUpAmount(_ amount: Double) {
         self.lastSelectedAmount = amount
     }
 
-    public func selectPackage(_ package: PackageEntity, router: (any AppRouterProtocol)?) {}
+    public func selectPackage(_ package: PackageEntity) {}
 
     public func clearValidationError() {
         self.validationError = nil

@@ -51,8 +51,6 @@ struct RootTabView: View {
         }
         .preferredColorScheme(themeManager.currentTheme.colorScheme)
         .environment(\.locale, languageManager.currentLanguage.locale)
-        .environment(\.appRouter, router)
-        .environment(router)
     }
     
     /// Tab binding with iOS platform convention: re-tapping the active tab pops its navigation stack to root.

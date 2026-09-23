@@ -41,7 +41,8 @@ private struct TopUpContainerLoadedView: View {
     init(container: any AppContainerProtocol) {
         _viewModel = State(wrappedValue: TopUpViewModel(
             telecomRepository: container.telecomRepository,
-            topUpRepository: container.topUpRepository
+            topUpRepository: container.topUpRepository,
+            router: container.appRouter
         ))
     }
 
@@ -53,7 +54,6 @@ private struct TopUpContainerLoadedView: View {
 @MainActor
 private struct TopUpContentView<VM: TopUpViewModelProtocol>: View {
     @Bindable var viewModel: VM
-    @Environment(\.appRouter) private var router
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @FocusState private var isPhoneFocused: Bool
 
@@ -150,7 +150,7 @@ private struct TopUpContentView<VM: TopUpViewModelProtocol>: View {
                         ForEach(viewModel.standardTopUpAmounts, id: \.self) { amount in
                             TopUpAmountTileView(amount: amount) {
                                 isPhoneFocused = false
-                                viewModel.selectTopUpAmount(amount, router: router)
+                                viewModel.selectTopUpAmount(amount)
                             }
                         }
                     }
@@ -187,7 +187,7 @@ private struct TopUpContentView<VM: TopUpViewModelProtocol>: View {
                                         ForEach(group.packages, id: \.id) { package in
                                             PackageCardView(package: package) {
                                                 isPhoneFocused = false
-                                                viewModel.selectPackage(package, router: router)
+                                                viewModel.selectPackage(package)
                                             }
                                         }
                                     }

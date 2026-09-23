@@ -55,4 +55,5 @@ struct TelecomOperatorTests {
             #expect(status.statusColor != nil)
         }
     }
+    
 }

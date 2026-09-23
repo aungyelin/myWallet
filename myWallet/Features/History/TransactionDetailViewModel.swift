@@ -55,7 +55,7 @@ public final class TransactionDetailViewModel: TransactionDetailViewModelProtoco
                 errorMessage = AppLocalization.string("transaction_not_found")
             }
         } catch {
-            logger.error("Failed to load transaction \(self.referenceNumber, privacy: .public): \(error.localizedDescription, privacy: .public)")
+            logger.error("Failed to load transaction detail: \(error.localizedDescription, privacy: .public)")
             self.errorMessage = error.localizedDescription
             self.isLoading = false
         }

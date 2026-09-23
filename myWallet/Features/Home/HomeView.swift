@@ -8,18 +8,48 @@
 import SwiftUI
 
 @MainActor
-struct HomeView: View {
-    @State private var viewModel: HomeViewModel
-    @Environment(\.appRouter) private var router
+struct HomeView<VM: HomeViewModelProtocol>: View {
+    @Environment(\.appContainer) private var appContainer
+    private let customViewModel: VM?
     
-    init(viewModel: HomeViewModel) {
-        _viewModel = State(wrappedValue: viewModel)
+    init(viewModel: VM) {
+        self.customViewModel = viewModel
     }
-    
+
+    var body: some View {
+        if let customViewModel {
+            HomeContentView(viewModel: customViewModel)
+        } else if let appContainer {
+            HomeContainerLoadedView(container: appContainer)
+        } else {
+            ProgressView()
+        }
+    }
+}
+
+extension HomeView where VM == HomeViewModel {
     init() {
-        _viewModel = State(wrappedValue: HomeViewModel())
+        self.customViewModel = nil
     }
-    
+}
+
+@MainActor
+private struct HomeContainerLoadedView: View {
+    @State private var viewModel: HomeViewModel
+
+    init(container: any AppContainerProtocol) {
+        _viewModel = State(wrappedValue: container.makeHomeViewModel())
+    }
+
+    var body: some View {
+        HomeContentView(viewModel: viewModel)
+    }
+}
+
+@MainActor
+private struct HomeContentView<VM: HomeViewModelProtocol>: View {
+    @Bindable var viewModel: VM
+
     private var gridColumns: [GridItem] {
         Array(
             repeating: GridItem(.flexible(), spacing: LayoutMetrics.spacingStandard),
@@ -50,7 +80,7 @@ struct HomeView: View {
                             title: AppLocalization.string("btn_top_up"),
                             iconName: "iphone.gen3",
                             action: {
-                                viewModel.navigateToTopUp(router: router)
+                                viewModel.navigateToTopUp()
                             }
                         )
                         
@@ -58,7 +88,7 @@ struct HomeView: View {
                             title: AppLocalization.string("btn_history"),
                             iconName: "clock.arrow.circlepath",
                             action: {
-                                viewModel.navigateToHistory(router: router)
+                                viewModel.navigateToHistory()
                             }
                         )
                     }

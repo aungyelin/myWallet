@@ -13,7 +13,6 @@ struct TelecomLogoView: View {
 
     var body: some View {
         ZStack {
-            // White circular background container
             Circle()
                 .fill(Color.white)
                 .frame(width: size, height: size)

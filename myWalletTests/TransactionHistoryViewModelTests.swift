@@ -56,6 +56,7 @@ struct TransactionHistoryViewModelTests {
         repo.transactionsToReturn = transactions
         let viewModel = TransactionHistoryViewModel(
             transactionRepository: repo,
+            router: MockAppRouter(),
             debounceNanoseconds: debounceNanoseconds
         )
         return (viewModel, repo)
@@ -188,8 +189,13 @@ struct TransactionHistoryViewModelTests {
         let sample = makeSampleTransactions()
         let (viewModel, _) = makeSUT(transactions: sample)
         let router = MockAppRouter()
+        let viewModelWithRouter = TransactionHistoryViewModel(
+            transactionRepository: MockTransactionRepository(),
+            router: router,
+            debounceNanoseconds: 0
+        )
 
-        viewModel.selectTransaction(sample[0], router: router)
+        viewModelWithRouter.selectTransaction(sample[0])
         #expect(router.navigatedRoutes.count == 1)
         #expect(router.navigatedRoutes.first == .transactionDetail(referenceNumber: sample[0].referenceNumber))
     }
@@ -201,4 +207,5 @@ struct TransactionHistoryViewModelTests {
         let view = TransactionHistoryView(viewModel: mockVM)
         #expect(view != nil)
     }
+    
 }

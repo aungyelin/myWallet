@@ -12,18 +12,13 @@ import SwiftData
 public protocol TopUpRepositoryProtocol: AnyObject {
     
     func getPackages(for operatorName: String) async throws -> [PackageEntity]
-
     func getCachedPackages(for operatorName: String) throws -> [PackageEntity]
-
     func prefetchPackages() async
-
-    func saveTransaction(_ transaction: TransactionHistory) throws
-
     func performRecharge(
         phone: String,
         operatorName: String,
         planTitle: String,
         amount: Double
-    ) async throws -> TransactionHistory
+    ) async throws -> TopUpRechargeResponseDTO
     
 }

@@ -47,6 +47,7 @@ public final class ThemeManager: ThemeManagerProtocol {
 }
 
 // MARK: - SwiftUI Environment Integration
+
 private struct ThemeManagerKey: EnvironmentKey {
     @MainActor static let defaultValue: ThemeManager = ThemeManager.shared
 }

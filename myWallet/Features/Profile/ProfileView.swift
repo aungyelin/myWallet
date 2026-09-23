@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ProfileView: View {
-    @Environment(\.appRouter) private var router
+    @Environment(\.appContainer) private var appContainer
     @Environment(\.themeManager) private var themeManager
     @Environment(\.languageManager) private var languageManager
     
@@ -45,7 +45,7 @@ struct ProfileView: View {
                             accessibilityLabel: "\(AppLocalization.string("profile_theme_setting", language: currentLang)), \(themeManager.currentTheme.displayName)",
                             accessibilityHint: AppLocalization.string("profile_theme_description", language: currentLang)
                         ) {
-                            router?.navigate(to: .themeSettings)
+                            appContainer?.appRouter.navigate(to: .themeSettings)
                         }
 
                         Divider()
@@ -59,7 +59,7 @@ struct ProfileView: View {
                             detail: currentLang.displayName(in: currentLang),
                             accessibilityLabel: AppLocalization.string("profile_language_setting", language: currentLang)
                         ) {
-                            router?.navigate(to: .languageSettings)
+                            appContainer?.appRouter.navigate(to: .languageSettings)
                         }
                     }
                     .background {

@@ -40,6 +40,9 @@ struct TelecomRepositoryTests {
             modelContext: container.mainContext
         )
 
+        // Detection is intentionally offline; seed the local catalog first.
+        _ = try await repository.getPrefixes()
+
         let mpt = try await repository.detectOperator(for: "09250000000")
         #expect(mpt?.operatorName == "MPT")
 
@@ -68,6 +71,9 @@ struct TelecomRepositoryTests {
             networkService: MockNetworkService(latencyNanoseconds: 0),
             modelContext: container.mainContext
         )
+
+        // Detection is intentionally offline; seed the local catalog first.
+        _ = try await repository.getPrefixes()
 
         let expectedOperators: [(String, TelecomOperator)] = [
             ("09200000000", .mpt), ("09210000000", .mpt), ("09260000000", .mpt),
@@ -148,17 +154,16 @@ struct TelecomRepositoryTests {
         #expect(result?.operatorName == "ATOM")
     }
 
-    @Test("Network Failure without Cache: Throws AppError.networkFailure")
-    func networkFailureWithoutCacheThrows() async throws {
+    @Test("Network Failure without Cache: Offline detection returns nil")
+    func networkFailureWithoutCacheReturnsNil() async throws {
         let container = try AppModelContainer.createInMemoryContainer()
         let context = container.mainContext
 
         let failingNetwork = FailingTelecomNetworkService()
         let repository = TelecomRepository(networkService: failingNetwork, modelContext: context)
 
-        await #expect(throws: AppError.networkFailure) {
-            _ = try await repository.detectOperator(for: "09790000000")
-        }
+        let result = try await repository.detectOperator(for: "09790000000")
+        #expect(result == nil)
     }
 
     @Test("prefetchPrefixes: Silently caches prefixes when network succeeds")
@@ -213,6 +218,7 @@ struct TelecomRepositoryTests {
         #expect(detected?.operatorName == "MPT")
         #expect(detected?.operatorType == .mpt)
     }
+
 }
 
 // MARK: - Failing Network Mock

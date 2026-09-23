@@ -71,27 +71,22 @@ struct TopUpRepositoryTests {
         }
     }
 
-    @Test("saveTransaction persists transaction record into SwiftData")
-    func saveTransactionSuccess() throws {
+    @Test("TopUpRepository only handles recharge submission")
+    func rechargeSubmissionReturnsResponse() async throws {
         let container = try AppModelContainer.createInMemoryContainer()
         let context = container.mainContext
         let repository = TopUpRepository(networkService: MockNetworkService(latencyNanoseconds: 0), modelContext: context)
 
-        let transaction = TransactionHistory.createTopUp(
-            mobileNumber: "09250000000",
+        let response = try await repository.performRecharge(
+            phone: "09250000000",
             operatorName: "MPT",
-            planDetails: "1,000 Ks Top-Up",
+            planTitle: "1,000 Ks Top-Up",
             amount: 1000.0
         )
 
-        try repository.saveTransaction(transaction)
-
-        let fetched = try context.fetch(FetchDescriptor<TransactionHistory>())
-        #expect(fetched.count == 1)
-        #expect(fetched.first?.mobileNumber == "09250000000")
-        #expect(fetched.first?.operatorName == "MPT")
-        #expect(fetched.first?.referenceNumber.hasPrefix("TXN") == false)
-        #expect(fetched.first?.referenceNumber.contains("-") == true)
+        #expect(response.mobileNumber == "09250000000")
+        #expect(response.operatorName == "MPT")
+        #expect(response.amount == 1000.0)
     }
 
     @Test("prefetchPackages: Silently caches data when network succeeds")
@@ -152,8 +147,8 @@ struct TopUpRepositoryTests {
         #expect(cached.first?.id == "cached_test_1")
     }
 
-    @Test("performRecharge submits to network and persists transaction to SwiftData")
-    func performRechargeSuccess() async throws {
+    @Test("performRecharge submits to network without persisting transactions")
+    func performRechargeReturnsResponse() async throws {
         let container = try AppModelContainer.createInMemoryContainer()
         let context = container.mainContext
         let repository = TopUpRepository(
@@ -161,26 +156,27 @@ struct TopUpRepositoryTests {
             modelContext: context
         )
 
-        let transaction = try await repository.performRecharge(
+        let response = try await repository.performRecharge(
             phone: "09253366392",
             operatorName: "MPT",
             planTitle: "1,000 Ks Top-Up",
             amount: 1000
         )
 
-        #expect(transaction.mobileNumber == "09253366392")
-        #expect(transaction.operatorName == "MPT")
-        #expect(transaction.amount == 1000)
-        #expect(!transaction.referenceNumber.hasPrefix("TXN"))
-        #expect(transaction.referenceNumber.contains("-"))
+        #expect(response.mobileNumber == "09253366392")
+        #expect(response.operatorName == "MPT")
+        #expect(response.amount == 1000)
+        #expect(!response.referenceNumber.hasPrefix("TXN"))
+        #expect(response.referenceNumber.contains("-"))
 
         let count = try context.fetchCount(FetchDescriptor<TransactionHistory>())
-        #expect(count == 1)
+        #expect(count == 0)
     }
 }
 
 // MARK: - Test Mock Helper
 private final class TestFailingNetworkService: MockNetworkServiceProtocol, Sendable {
+    
     func fetchTelecomPrefixes() async throws -> [TelecomPrefixDTO] {
         throw AppError.networkFailure
     }
@@ -201,4 +197,5 @@ private final class TestFailingNetworkService: MockNetworkServiceProtocol, Senda
     ) async throws -> TopUpRechargeResponseDTO {
         throw AppError.networkFailure
     }
+    
 }

@@ -154,15 +154,3 @@ public final class AppRouter: AppRouterProtocol {
     }
     
 }
-
-// MARK: - SwiftUI Environment Integration
-private struct AppRouterKey: EnvironmentKey {
-    static let defaultValue: (any AppRouterProtocol)? = nil
-}
-
-extension EnvironmentValues {
-    public var appRouter: (any AppRouterProtocol)? {
-        get { self[AppRouterKey.self] }
-        set { self[AppRouterKey.self] = newValue }
-    }
-}

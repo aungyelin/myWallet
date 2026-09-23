@@ -58,7 +58,7 @@ public final class MockNetworkService: MockNetworkServiceProtocol {
         }
         
         let referenceNumber = ReferenceNumberGenerator.generate()
-        logger.info("Mock API: processed top-up recharge for \(operatorName, privacy: .public), ref: \(referenceNumber, privacy: .public)")
+        logger.info("Mock API: processed top-up recharge successfully.")
         
         return TopUpRechargeResponseDTO(
             referenceNumber: referenceNumber,

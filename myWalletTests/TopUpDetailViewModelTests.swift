@@ -26,27 +26,30 @@ struct TopUpDetailViewModelTests {
     func successfulPayment() async {
         let params = makeParams()
         let topUpRepo = MockTopUpRepository()
+        let transactionRepo = MockTransactionRepository()
         let router = MockAppRouter()
 
         let viewModel = TopUpDetailViewModel(
             params: params,
-            topUpRepository: topUpRepo
+            topUpRepository: topUpRepo,
+            transactionRepository: transactionRepo,
+            router: router
         )
 
         #expect(viewModel.isProcessing == false)
         #expect(viewModel.errorMessage == nil)
 
-        await viewModel.confirmPayment(router: router)
+        await viewModel.confirmPayment()
 
         #expect(viewModel.isProcessing == false)
         #expect(viewModel.errorMessage == nil)
-        #expect(topUpRepo.savedTransactions.count == 1)
+        #expect(transactionRepo.savedTransactions.count == 1)
 
-        let saved = topUpRepo.savedTransactions.first
+        let saved = transactionRepo.savedTransactions.first
         #expect(saved?.mobileNumber == "09253366392")
         #expect(saved?.operatorName == "MPT")
         #expect(saved?.amount == 998)
-        #expect(saved?.referenceNumber == "TXN-TEST-12345")
+        #expect(saved?.referenceNumber == "20260923-123456")
 
         #expect(router.navigatedRoutes.count == 1)
         guard case .topUpSuccess(let receiptParams) = router.navigatedRoutes.first else {
@@ -55,7 +58,7 @@ struct TopUpDetailViewModelTests {
         }
 
         #expect(receiptParams.phone == "09253366392")
-        #expect(receiptParams.referenceNumber == "TXN-TEST-12345")
+        #expect(receiptParams.referenceNumber == "20260923-123456")
         #expect(receiptParams.operatorType == .mpt)
         #expect(receiptParams.amount == 998)
     }
@@ -64,19 +67,23 @@ struct TopUpDetailViewModelTests {
     func paymentFailure() async {
         let params = makeParams()
         let topUpRepo = MockTopUpRepository()
+        let transactionRepo = MockTransactionRepository()
         topUpRepo.shouldFailRecharge = true
         let router = MockAppRouter()
 
         let viewModel = TopUpDetailViewModel(
             params: params,
-            topUpRepository: topUpRepo
+            topUpRepository: topUpRepo,
+            transactionRepository: transactionRepo,
+            router: router
         )
 
-        await viewModel.confirmPayment(router: router)
+        await viewModel.confirmPayment()
 
         #expect(viewModel.isProcessing == false)
         #expect(viewModel.errorMessage != nil)
         #expect(router.navigatedRoutes.isEmpty)
-        #expect(topUpRepo.savedTransactions.isEmpty)
+        #expect(transactionRepo.savedTransactions.isEmpty)
     }
+    
 }

@@ -479,4 +479,5 @@ struct AppRouterTests {
         #expect(mock.finishFlowInvocations.count == 1)
         #expect(mock.finishFlowInvocations.first?.popCount == 1)
     }
+    
 }

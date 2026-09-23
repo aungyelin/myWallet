@@ -11,7 +11,6 @@ import Foundation
 public protocol ThemeManagerProtocol: AnyObject {
     
     var currentTheme: AppTheme { get }
-    
     func setTheme(_ theme: AppTheme)
     
 }

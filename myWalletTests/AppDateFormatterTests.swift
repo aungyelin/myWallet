@@ -45,4 +45,5 @@ struct AppDateFormatterTests {
         #expect(formatted.contains("2026"))
         #expect(!formatted.contains("2569"))
     }
+    
 }

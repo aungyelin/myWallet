@@ -17,19 +17,21 @@ struct TopUpViewModelTests {
         detectedPrefix: TelecomPrefixEntity? = nil,
         cachedPackages: [PackageEntity] = [],
         debounceNanoseconds: UInt64 = 0
-    ) -> (TopUpViewModel, MockTelecomRepository, MockTopUpRepository) {
+    ) -> (TopUpViewModel, MockTelecomRepository, MockTopUpRepository, MockAppRouter) {
         let telecomRepo = MockTelecomRepository()
         telecomRepo.detectedPrefixToReturn = detectedPrefix
 
         let topUpRepo = MockTopUpRepository()
         topUpRepo.cachedPackagesToReturn = cachedPackages
+        let router = MockAppRouter()
 
         let viewModel = TopUpViewModel(
             telecomRepository: telecomRepo,
             topUpRepository: topUpRepo,
+            router: router,
             debounceNanoseconds: debounceNanoseconds
         )
-        return (viewModel, telecomRepo, topUpRepo)
+        return (viewModel, telecomRepo, topUpRepo, router)
     }
 
     private func sampleMPTPackages() -> [PackageEntity] {
@@ -75,7 +77,7 @@ struct TopUpViewModelTests {
 
     @Test("Initial state has empty phone, invisible operator tag, and hidden packages")
     func initialState() {
-        let (viewModel, _, _) = makeSUT()
+        let (viewModel, _, _, _) = makeSUT()
 
         #expect(viewModel.phoneNumber.isEmpty)
         #expect(viewModel.detectedOperator == .unknown)
@@ -89,7 +91,7 @@ struct TopUpViewModelTests {
 
     @Test("Myanmar numerals are normalized to Arabic digits and prefix standardizes to 09")
     func phoneNormalization() async {
-        let (viewModel, _, _) = makeSUT()
+        let (viewModel, _, _, _) = makeSUT()
 
         // Myanmar numerals: ၀၉၂၅၀၀၀၀၀၀၀ -> 09250000000
         await viewModel.onPhoneNumberChanged("၀၉၂၅၀၀၀၀၀၀၀")
@@ -102,7 +104,7 @@ struct TopUpViewModelTests {
 
     @Test("Less than 3 digits does not trigger operator detection")
     func lessThanThreeDigits() async {
-        let (viewModel, _, _) = makeSUT()
+        let (viewModel, _, _, _) = makeSUT()
 
         await viewModel.onPhoneNumberChanged("09")
         #expect(viewModel.detectedOperator == .unknown)
@@ -118,7 +120,7 @@ struct TopUpViewModelTests {
             brandDisplayName: "MPT",
             brandLogoName: "antenna.radiowaves.left.and.right"
         )
-        let (viewModel, _, _) = makeSUT(
+        let (viewModel, _, _, _) = makeSUT(
             detectedPrefix: mptPrefix,
             cachedPackages: sampleMPTPackages()
         )
@@ -149,7 +151,7 @@ struct TopUpViewModelTests {
             brandDisplayName: "MPT",
             brandLogoName: "antenna.radiowaves.left.and.right"
         )
-        let (viewModel, _, _) = makeSUT(
+        let (viewModel, _, _, _) = makeSUT(
             detectedPrefix: mptPrefix,
             cachedPackages: sampleMPTPackages()
         )
@@ -174,7 +176,7 @@ struct TopUpViewModelTests {
             brandDisplayName: "MPT",
             brandLogoName: "antenna.radiowaves.left.and.right"
         )
-        let (viewModel, _, _) = makeSUT(
+        let (viewModel, _, _, _) = makeSUT(
             detectedPrefix: mptPrefix,
             cachedPackages: sampleMPTPackages()
         )
@@ -191,10 +193,9 @@ struct TopUpViewModelTests {
 
     @Test("Selecting top-up amount with invalid phone fails validation without navigation")
     func selectAmountInvalidPhone() {
-        let (viewModel, _, _) = makeSUT()
-        let router = MockAppRouter()
+        let (viewModel, _, _, router) = makeSUT()
 
-        viewModel.selectTopUpAmount(1000, router: router)
+        viewModel.selectTopUpAmount(1000)
         #expect(viewModel.validationError != nil)
         #expect(router.navigatedRoutes.isEmpty)
     }
@@ -207,14 +208,12 @@ struct TopUpViewModelTests {
             brandDisplayName: "MPT",
             brandLogoName: "antenna.radiowaves.left.and.right"
         )
-        let (viewModel, _, _) = makeSUT(
+        let (viewModel, _, _, router) = makeSUT(
             detectedPrefix: mptPrefix,
             cachedPackages: sampleMPTPackages()
         )
-        let router = MockAppRouter()
-
         await viewModel.onPhoneNumberChanged("09253366392")
-        viewModel.selectTopUpAmount(5000, router: router)
+        viewModel.selectTopUpAmount(5000)
 
         #expect(viewModel.validationError == nil)
         #expect(router.navigatedRoutes.count == 1)
@@ -238,14 +237,12 @@ struct TopUpViewModelTests {
             brandLogoName: "antenna.radiowaves.left.and.right"
         )
         let packages = sampleMPTPackages()
-        let (viewModel, _, _) = makeSUT(
+        let (viewModel, _, _, router) = makeSUT(
             detectedPrefix: mptPrefix,
             cachedPackages: packages
         )
-        let router = MockAppRouter()
-
         await viewModel.onPhoneNumberChanged("09253366392")
-        viewModel.selectPackage(packages[0], router: router)
+        viewModel.selectPackage(packages[0])
 
         #expect(viewModel.validationError == nil)
         #expect(router.navigatedRoutes.count == 1)
@@ -269,7 +266,7 @@ struct TopUpViewModelTests {
             brandDisplayName: "MPT",
             brandLogoName: "mpt"
         )
-        let (viewModel, _, _) = makeSUT(
+        let (viewModel, _, _, _) = makeSUT(
             detectedPrefix: mptPrefix,
             debounceNanoseconds: 50_000_000 // 50ms
         )
@@ -306,4 +303,5 @@ struct TopUpViewModelTests {
         #expect(mockVM.phoneNumber == "09778239012")
         #expect(mockVM.detectedOperator == .atom)
     }
+    
 }

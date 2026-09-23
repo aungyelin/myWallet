@@ -56,4 +56,5 @@ struct AppContainerTests {
         #expect(container.appRouter != nil)
         #expect(container.modelContainer != nil)
     }
+    
 }

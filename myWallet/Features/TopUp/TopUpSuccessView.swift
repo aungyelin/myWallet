@@ -9,7 +9,7 @@ import SwiftUI
 
 struct TopUpSuccessView: View {
     let params: TopUpReceiptParams
-    @Environment(\.appRouter) private var router
+    @Environment(\.appContainer) private var appContainer
     @State private var isCheckmarkAnimated: Bool = false
     
     var body: some View {
@@ -95,10 +95,10 @@ struct TopUpSuccessView: View {
                 
                 // Back to Home Button
                 Button(action: {
-                    if router?.presentedCover != nil {
-                        router?.dismissCover()
+                    if appContainer?.appRouter.presentedCover != nil {
+                        appContainer?.appRouter.dismissCover()
                     } else {
-                        router?.popToRoot()
+                        appContainer?.appRouter.popToRoot()
                     }
                 }) {
                     Label(AppLocalization.string("action_back_to_home"), systemImage: "house.fill")

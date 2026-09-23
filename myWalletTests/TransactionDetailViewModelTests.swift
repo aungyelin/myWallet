@@ -165,4 +165,5 @@ struct TransactionDetailViewModelTests {
         let view = TransactionDetailView(viewModel: mockVM)
         #expect(view.referenceNumber == "20260923-00001")
     }
+    
 }

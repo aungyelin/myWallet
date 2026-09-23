@@ -43,4 +43,5 @@ struct ReferenceNumberGeneratorTests {
         let reference = ReferenceNumberGenerator.generate(date: date)
         #expect(reference.contains("20260922"))
     }
+    
 }

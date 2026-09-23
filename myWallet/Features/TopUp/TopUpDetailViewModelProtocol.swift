@@ -6,14 +6,15 @@
 //
 
 import Foundation
+import Observation
 
 @MainActor
-public protocol TopUpDetailViewModelProtocol: AnyObject {
+public protocol TopUpDetailViewModelProtocol: AnyObject, Observable {
     
     var params: TopUpCheckoutParams { get }
     var isProcessing: Bool { get }
     var errorMessage: String? { get }
 
-    func confirmPayment(router: (any AppRouterProtocol)?) async
+    func confirmPayment() async
     
 }
